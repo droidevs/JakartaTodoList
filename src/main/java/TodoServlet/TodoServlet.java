@@ -15,23 +15,17 @@ import java.util.List;
 
 @WebServlet("/todos")
 public class TodoServlet extends HttpServlet {
-    
-    private List<String> todos = new ArrayList<>();
 
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("todos", todos);
+        req.setAttribute("todos", TodoStore.getTodos());
         req.getRequestDispatcher("/todos.jsp").forward(req, resp);
     }
     
     
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String task = req.getParameter("task");
-        if (task != null && !task.isEmpty()) {
-            todos.add(task);
-        }
         resp.sendRedirect(req.getContextPath() + "/todos");
     }
  

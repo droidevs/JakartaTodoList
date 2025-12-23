@@ -3,6 +3,8 @@
     Created on : Dec 23, 2025, 4:14:54 PM
     Author     : admin
 --%>
+<%@page import="TodoServlet.Todo"%>
+<%@page import="java.util.List"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
@@ -11,17 +13,33 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body class="p-4">
-    <h1>My Todo List</h1>
-    <form action="${pageContext.request.contextPath}/todos" method="post">
-        <input type="text" name="task" class="form-control mb-2" placeholder="Add a new task"/>
-        <button type="submit" class="btn btn-primary">Add</button>
-    </form>
-    <ul class="list-group mt-3">
-        <p>${todos.size()}</p>
-        <c:forEach items="${todos}" var="t">
-            <li class="list-group-item">${t}</li>
-        </c:forEach>
-    </ul>
+    <div class="container mt-5">
+    <h2>Todos List</h2>
+    <a href="${pageContext.request.contextPath}/create-todo" class="btn btn-success mb-3">Add New Todo</a>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+            List<Todo> todos = (List<Todo>) request.getAttribute("todos");
+            if (todos != null) {
+                for (Todo todo : todos) {
+        %>
+        <tr>
+            <td><%= todo.getTitle() %></td>
+            <td><%= todo.getDescription() %></td>
+        </tr>
+        <%      }
+            }
+        %>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
 
