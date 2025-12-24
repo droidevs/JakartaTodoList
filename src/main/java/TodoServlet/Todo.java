@@ -13,6 +13,12 @@ public class Todo {
     private Integer id;
     private String title;
     private String description;
+
+    public Todo() {
+        id = ID++;
+        title = "";
+        description = "";
+    }
     
     public Todo(String title, String description) {
         id = ID++;
@@ -30,6 +36,23 @@ public class Todo {
     
     public String getDescription() {
         return description;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+   
+    public Boolean isEmpty() {
+        return title.isEmpty() && description.isEmpty();
     }
     
     private static Integer ID = 1;

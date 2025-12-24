@@ -5,25 +5,31 @@
 package TodoServlet;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class TodoStore {
     // Static list to store all todos
-    private static final List<Todo> todos = new ArrayList<>();
-
+    private static final Map<Integer, Todo> todos = new LinkedHashMap<>();
+    
+    public static Todo getTodo(Integer id) {
+        return todos.get(id);
+    }
     // Add a todo
     public static void addTodo(Todo todo) {
-        todos.add(todo);
+        todos.put(todo.getId(), todo);
     }
     
     public static void deleteTodo(Integer id) {
-        todos.removeIf((var todo) -> Objects.equals(id, todo.getId()));
+        todos.remove(id);
     }
 
     // Get all todos
-    public static List<Todo> getTodos() {
-        return new ArrayList<>(todos); // return copy to avoid external modification
+    public static Collection<Todo> getTodos() {
+        return todos.values(); // return copy to avoid external modification
     }
 
     // Optional: clear all todos
