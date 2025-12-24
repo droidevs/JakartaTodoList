@@ -4,37 +4,104 @@
  */
 package TodoServlet;
 
+import Data.Database;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.management.remote.JMXConnectorFactory;
 
 public class TodoStore {
-    // Static list to store all todos
-    private static final Map<Integer, Todo> todos = new LinkedHashMap<>();
+    
     
     public static Todo getTodo(Integer id) {
-        return todos.get(id);
+        String sql = "SELECT * FROM todos WHERE id=?";
+        try(Connection conn = Database.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(0, id);
+            ResultSet rs = stmt.executeQuery();
+            Todo todo = new Todo();
+            todo.setId(rs.getInt("id"));
+            todo.setTitle(rs.getString("title"));
+            todo.setDescription(rs.getString("description"));
+            return todo;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     // Add a todo
     public static void addTodo(Todo todo) {
-        todos.put(todo.getId(), todo);
+        try(Connection conn = Database.getConnection()) {
+            String sql = "INSERT INTO todos (title, description) VALUES (?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, todo.getTitle());
+            stmt.setString(2, todo.getDescription());
+            stmt.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void updateTodo(Todo todo) {
+        String sql = "UPDATE todos SET title=?, description=? WHERE id=?";
+        try(Connection conn = Database.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(0, todo.getTitle());
+            stmt.setString(1, todo.getDescription());
+            stmt.setInt(2, todo.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     
     public static void deleteTodo(Integer id) {
-        todos.remove(id);
+        String sql = "DELETE FROM todos WHERE id=?";
+        try(Connection conn = Database.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(0, id);
+            stmt.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // Get all todos
-    public static Collection<Todo> getTodos() {
-        return todos.values(); // return copy to avoid external modification
+    public static List<Todo> getTodos() {
+        List<Todo> todos = new ArrayList<>();
+        try(Connection conn = Database.getConnection()) {
+            String sql = "SELECT * FROM todos";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                Todo todo = new Todo();
+                todo.setId(rs.getInt("id"));
+                todo.setTitle(rs.getString("title"));
+                todo.setDescription(rs.getString("description"));
+                todos.add(todo);
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return todos;
     }
 
     // Optional: clear all todos
     public static void clearTodos() {
-        todos.clear();
+        String sql = "DELETE FROM todos";
+        try(Connection conn = Database.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.execute(sql);
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 

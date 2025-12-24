@@ -89,7 +89,11 @@ public class TodoFormServlet extends HttpServlet {
         todo.setDescription(description);
         
         if (errors.isEmpty()) {
-            TodoStore.addTodo(todo);
+            if (id != 0) {
+                TodoStore.updateTodo(todo);
+            } else {
+                TodoStore.addTodo(todo);
+            }
             response.sendRedirect(request.getContextPath() + "/todos");
         } else {
             request.setAttribute("errors", errors);
