@@ -22,6 +22,7 @@
         <tr>
             <th>Title</th>
             <th>Description</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +34,12 @@
         <tr>
             <td><%= todo.getTitle() %></td>
             <td><%= todo.getDescription() %></td>
+            <td>
+                <form action="todo/delete" method="get" style="display:inline;">
+                    <input type="hidden" name="id" value="<%= todo.getId() %>">
+                    <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+                </form>
+            </td>
         </tr>
         <%      }
             }

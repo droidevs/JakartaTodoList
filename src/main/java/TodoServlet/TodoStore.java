@@ -6,6 +6,7 @@ package TodoServlet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TodoStore {
     // Static list to store all todos
@@ -14,6 +15,10 @@ public class TodoStore {
     // Add a todo
     public static void addTodo(Todo todo) {
         todos.add(todo);
+    }
+    
+    public static void deleteTodo(Integer id) {
+        todos.removeIf((var todo) -> Objects.equals(id, todo.getId()));
     }
 
     // Get all todos

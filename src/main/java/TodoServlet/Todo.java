@@ -10,12 +10,18 @@ package TodoServlet;
  */
 public class Todo {
     
+    private Integer id;
     private String title;
     private String description;
     
     public Todo(String title, String description) {
+        id = ID++;
         this.title = title;
         this.description = description;
+    }
+
+    public Integer getId() {
+        return id;
     }
     
     public String getTitle() {
@@ -25,4 +31,6 @@ public class Todo {
     public String getDescription() {
         return description;
     }
+    
+    private static Integer ID = 1;
 }
