@@ -4,8 +4,16 @@
         <servlet-name>DeleteTodoServlet</servlet-name>
         <servlet-class>TodoServlet.DeleteTodoServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewTodoServlet</servlet-name>
+        <servlet-class>TodoServlet.ViewTodoServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DeleteTodoServlet</servlet-name>
         <url-pattern>/DeleteTodoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewTodoServlet</servlet-name>
+        <url-pattern>/ViewTodoServlet</url-pattern>
     </servlet-mapping>
 </web-app>
