@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  *
@@ -38,6 +39,13 @@ public class ViewTodoServlet extends HttpServlet {
         System.out.println(request.getParameter("id"));
         try {
             id = Integer.valueOf(request.getParameter("id"));
+            var todoUser = TodoStore.getUserIdForTodo(id);
+            var sessionUser = (Integer) request.getSession().getAttribute("userId");
+            if(!Objects.equals(todoUser, sessionUser)){
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                        "You are not allowed to access this resource");
+                return;
+            }
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath()+ "/todos");
             return;

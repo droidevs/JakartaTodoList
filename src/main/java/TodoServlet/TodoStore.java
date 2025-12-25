@@ -9,17 +9,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import javax.management.remote.JMXConnectorFactory;
 
 public class TodoStore {
     
+    
+    public static Integer getUserIdForTodo(Integer todoId) {
+        return -1;
+    }
     
     public static Todo getTodo(Integer id) {
         String sql = "SELECT * FROM todos WHERE id=?";
@@ -40,8 +38,9 @@ public class TodoStore {
     // Add a todo
     public static void addTodo(Todo todo) {
         try(Connection conn = Database.getConnection()) {
-            String sql = "INSERT INTO todos (title, description) VALUES (?, ?)";
+            String sql = "INSERT INTO todos (user_id, title, description) VALUES (?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, todo.getId());
             stmt.setString(1, todo.getTitle());
             stmt.setString(2, todo.getDescription());
             stmt.executeUpdate();
@@ -53,9 +52,9 @@ public class TodoStore {
         String sql = "UPDATE todos SET title=?, description=? WHERE id=?";
         try(Connection conn = Database.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(0, todo.getTitle());
-            stmt.setString(1, todo.getDescription());
-            stmt.setInt(2, todo.getId());
+            stmt.setString(1, todo.getTitle());
+            stmt.setString(2, todo.getDescription());
+            stmt.setInt(3, todo.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,11 +73,12 @@ public class TodoStore {
     }
 
     // Get all todos
-    public static List<Todo> getTodos() {
+    public static List<Todo> getTodos(Integer userId) {
         List<Todo> todos = new ArrayList<>();
         try(Connection conn = Database.getConnection()) {
-            String sql = "SELECT * FROM todos";
+            String sql = "SELECT * FROM todos WHERE user_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
                 Todo todo = new Todo();
@@ -94,10 +94,11 @@ public class TodoStore {
     }
 
     // Optional: clear all todos
-    public static void clearTodos() {
-        String sql = "DELETE FROM todos";
+    public static void clearTodos(Integer userId) {
+        String sql = "DELETE FROM todos WHERE user_id = ?";
         try(Connection conn = Database.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userId);
             stmt.execute(sql);
         } catch(SQLException e) {
             e.printStackTrace();

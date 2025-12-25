@@ -8,8 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,7 +19,14 @@ public class TodoServlet extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("todos", TodoStore.getTodos());
+        
+        HttpSession session = (HttpSession) req.getSession();
+        Integer userId = (Integer) session.getAttribute("userId");
+        
+        // (auth filter) the session is already garanteed and all its attributes are there
+        
+        List<Todo> todos = TodoStore.getTodos(userId);
+        req.setAttribute("todos", todos);
         req.getRequestDispatcher("/todos.jsp").forward(req, resp);
     }
     

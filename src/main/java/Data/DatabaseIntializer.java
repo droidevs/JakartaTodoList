@@ -35,7 +35,8 @@ public class DatabaseIntializer implements ServletContextListener {
                     "id INT AUTO_INCREMENT PRIMARY KEY," + 
                     "username VARCHAR(50) NOT NULL UNIQUE," + 
                     "full_name VARCHAR(100) NOT NULL," +
-                    "password VARCHAR(255) NOT NULL" + 
+                    "password VARCHAR(255) NOT NULL" +
+                    "FOREIGH KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" +
                     ");";
             
             stmt.executeUpdate(sqlTodosTable);

@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try (Connection conn = Database.getConnection()) {
-            String sql = "SELECT password FROM users WHERE username = ?";
+            String sql = "SELECT id, password FROM users WHERE username = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
@@ -49,6 +49,7 @@ public class LoginServlet extends HttpServlet {
                 if (PasswordUtil.verifyPassword(password, hashedPassword)) {
                     // Password correct
                     HttpSession session = request.getSession();
+                    session.setAttribute("userId", ""+rs.getInt("id"));
                     session.setAttribute("user", username);
                     response.sendRedirect(request.getContextPath() + "/todos");
                     

@@ -13,15 +13,16 @@ public class Todo {
     private Integer id;
     private String title;
     private String description;
+    private Integer userId;
 
     public Todo() {
-        id = ID++;
+        id = -1;
         title = "";
         description = "";
     }
     
     public Todo(String title, String description) {
-        id = ID++;
+        id = -1;
         this.title = title;
         this.description = description;
     }
@@ -38,6 +39,11 @@ public class Todo {
         return description;
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+    
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -49,11 +55,13 @@ public class Todo {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
     
    
     public Boolean isEmpty() {
         return title.isEmpty() && description.isEmpty();
     }
-    
-    private static Integer ID = 1;
 }

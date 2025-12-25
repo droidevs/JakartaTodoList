@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 /**
  *
  * @author Mouad OUMOUS
@@ -37,12 +38,21 @@ public class TodoFormServlet extends HttpServlet {
         
         try {
             id = Integer.valueOf(request.getParameter("id"));
+            // if the id is there then we are in the edit mode 
+            // we check if the edited resource is for the logged in user
+            var todoUser = TodoStore.getUserIdForTodo(id);
+            var sessionUser = (Integer) request.getSession().getAttribute("userId");
+            if(!Objects.equals(todoUser, sessionUser)){
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                        "You are not allowed to access this resource");
+                return;
+            }
         } catch (NumberFormatException e) {
-            id = 0;
+            id = -1;
         }
         
         Todo todo = new Todo();
-        if (id > 0) {
+        if (id != -1) {
             var o = TodoStore.getTodo(id);
             if (o != null) {
                 todo = o;
@@ -74,17 +84,26 @@ public class TodoFormServlet extends HttpServlet {
         if (title == null || title.trim().isBlank()) errors.put("title", "Title is required");
         if (description == null || description.trim().isBlank()) errors.put("description", "description is required");
         
+        var sessionUser = (Integer) request.getSession().getAttribute("userId");
         Integer id;
+        
         try {
             id = Integer.valueOf(request.getParameter("id"));
+            var todoUser = TodoStore.getUserIdForTodo(id);
+            if(!Objects.equals(todoUser, sessionUser)){
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                        "You are not allowed to access this resource");
+                return;
+            }
         } catch (NumberFormatException e) {
-            id = 0;
+            id = -1;
         }
         
         Todo todo = new Todo();
-        if (id != 0) {
-            todo.setId(id);
+        if (id != -1) {
+            todo.setId(id); 
         }
+        
         todo.setTitle(title);
         todo.setDescription(description);
         
@@ -92,6 +111,7 @@ public class TodoFormServlet extends HttpServlet {
             if (id != 0) {
                 TodoStore.updateTodo(todo);
             } else {
+                todo.setUserId(sessionUser);
                 TodoStore.addTodo(todo);
             }
             response.sendRedirect(request.getContextPath() + "/todos");
