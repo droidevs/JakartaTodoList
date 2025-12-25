@@ -4,9 +4,15 @@
  */
 package TodoServlet;
 
+import Constants.TodoStatus;
 import Data.Todo;
+import Exceptions.ResourceNotFoundException;
+import Models.CreateTodoRequest;
+import Models.GetTodoRequest;
+import Models.UpdateTodoRequest;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
+import Services.TodoService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,6 +20,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,10 +32,10 @@ import java.util.Objects;
 @WebServlet("/todo/create")
 public class TodoFormServlet extends HttpServlet {
 
-    private final TodoRepository todoRepository;
+    private final TodoService todoService;
 
     public TodoFormServlet() {
-        this.todoRepository = new TodoRepositoryJdbc();
+        this.todoService = new TodoService();
     }
     
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -49,29 +57,24 @@ public class TodoFormServlet extends HttpServlet {
             id = Integer.valueOf(request.getParameter("id"));
             // if the id is there then we are in the edit mode 
             // we check if the edited resource is for the logged in user
-            var todoUser = todoRepository.getUserIdForTodo(id);
             var sessionUser = (Integer) request.getSession().getAttribute("userId");
-            if(!Objects.equals(todoUser, sessionUser)){
-                response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                        "You are not allowed to access this resource");
-                return;
-            }
+            var todo = todoService.getTodo(new GetTodoRequest(id), sessionUser);
+            
+            request.setAttribute("todo", todo);
+            // Show the form page
+            request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
+
         } catch (NumberFormatException e) {
-            id = -1;
+            request.setAttribute("todo", new Todo());
+            // Show the form page
+            request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
+            
+        } catch(Exception e) {
+            request.setAttribute("error", e.getMessage());
+            request.getRequestDispatcher("TodoForm.jsp").forward(request, response);
         }
         
-        Todo todo = new Todo();
-        if (id != -1) {
-            var o = todoRepository.findById(id);
-            if (o != null) {
-                todo = o;
-            }
-        }
         
-        request.setAttribute("todo", todo);
-        
-        // Show the form page
-        request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
     }
 
     /**
@@ -89,46 +92,33 @@ public class TodoFormServlet extends HttpServlet {
         
        String title = request.getParameter("title");
        String description = request.getParameter("description");
+       String dueDate = request.getParameter("dueDate");
        
         if (title == null || title.trim().isBlank()) errors.put("title", "Title is required");
         if (description == null || description.trim().isBlank()) errors.put("description", "description is required");
         
+        if (!errors.isEmpty()) {
+            request.setAttribute("errors", errors);
+            getServletContext().getRequestDispatcher("/TodoForm.jsp").forward(request, response);
+            return;
+        }
         var sessionUser = (Integer) request.getSession().getAttribute("userId");
         Integer id;
         
         try {
             id = Integer.valueOf(request.getParameter("id"));
-            var todoUser = todoRepository.getUserIdForTodo(id);
-            if(!Objects.equals(todoUser, sessionUser)){
-                response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                        "You are not allowed to access this resource");
-                return;
-            }
+            var updateRequest = new UpdateTodoRequest(id,title,description);
+            todoService.updateTodo(updateRequest, sessionUser);
         } catch (NumberFormatException e) {
-            id = -1;
+            var createRequest = new CreateTodoRequest(title, description, TodoStatus.NEW, LocalDate.parse(dueDate));
+            todoService.createTodo(createRequest, sessionUser);
+        } catch(Exception e) {
+            request.setAttribute("error", e.getMessage());
+            request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
+            return;
         }
         
-        Todo todo = new Todo();
-        if (id != -1) {
-            todo.setId(id); 
-        }
-        
-        todo.setTitle(title);
-        todo.setDescription(description);
-        
-        if (errors.isEmpty()) {
-            if (id != 0) {
-                todoRepository.update(todo);
-            } else {
-                todo.setUserId(sessionUser);
-                todoRepository.save(todo);
-            }
-            response.sendRedirect(request.getContextPath() + "/todos");
-        } else {
-            request.setAttribute("errors", errors);
-            request.setAttribute("todo", todo);
-            getServletContext().getRequestDispatcher("/TodoForm.jsp").forward(request, response);
-        }
+        response.sendRedirect(request.getContextPath() + "/todos");
         
     }
 

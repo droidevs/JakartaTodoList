@@ -8,10 +8,10 @@ package Exceptions;
  *
  * @author Mouad OUMOUS
  */
-public class UserAlreadyExistException extends Exception{
+public class IncorrectPasswordException extends Exception {
 
-    public UserAlreadyExistException() {
-        super("Username already taken");
+    public IncorrectPasswordException() {
+        super("Invalid User or Password Exception");
     }
-    
+  
 }

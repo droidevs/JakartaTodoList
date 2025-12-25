@@ -4,9 +4,8 @@
  */
 package TodoServlet;
 
-import Data.Todo;
-import Repositories.TodoRepository;
-import Repositories.impl.TodoRepositoryJdbc;
+import Models.GetTodoRequest;
+import Services.TodoService;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,10 +21,10 @@ import java.util.Objects;
 @WebServlet("/todo/view")
 public class ViewTodoServlet extends HttpServlet {
 
-    private final TodoRepository todoRepository;
+    private final TodoService todoService;
 
     public ViewTodoServlet() {
-        this.todoRepository = new TodoRepositoryJdbc();
+        this.todoService = new TodoService();
     }
     
 
@@ -44,31 +43,23 @@ public class ViewTodoServlet extends HttpServlet {
         
         Integer id;
 
-        System.out.println(request.getParameter("id"));
         try {
             id = Integer.valueOf(request.getParameter("id"));
-            var todoUser = todoRepository.getUserIdForTodo(id);
             var sessionUser = (Integer) request.getSession().getAttribute("userId");
-            if(!Objects.equals(todoUser, sessionUser)){
-                response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                        "You are not allowed to access this resource");
-                return;
-            }
+            
+            var todo = todoService.getTodo(new GetTodoRequest(id), 
+                    sessionUser
+            );
+            request.setAttribute("todo", todo);
+            request.getRequestDispatcher("/ViewTodo.jsp").forward(request, response);
+            
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath()+ "/todos");
             return;
+        } catch(Exception e) {
+            request.setAttribute("error",e.getMessage());
+            request.getRequestDispatcher("/TodoView.jsp").forward(request, response);
         }
-        
-        Todo todo = todoRepository.findById(id);
-        
-        if (todo == null) {
-            response.sendRedirect(request.getContextPath()+ "/todos");
-            return;
-        }
-        
-        request.setAttribute("todo", todo);
-        request.getRequestDispatcher("/ViewTodo.jsp").forward(request, response);
-       
     }
     
 }

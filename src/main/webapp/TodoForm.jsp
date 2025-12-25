@@ -4,7 +4,7 @@
     Author     : Mouad OUMOUS
 --%>
 
-<%@page import="TodoServlet.Todo"%>
+<%@page import="Data.Todo"%>
 
 <%@ include file="header.jsp" %>
 
@@ -15,7 +15,7 @@
     %>
     <div class="mb-3">
         <%
-            if (todo.getId() != 0) {
+            if (todo.getId() != -1) {
         %>
         <input type="hidden" class="form-control" id="id" name="id" value="<%= todo.getId() %>" required><!-- comment -->
         <% } %>

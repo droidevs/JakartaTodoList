@@ -4,8 +4,7 @@
  */
 package TodoServlet;
 import Data.Todo;
-import Repositories.TodoRepository;
-import Repositories.impl.TodoRepositoryJdbc;
+import Services.TodoService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,10 +18,10 @@ import java.util.List;
 @WebServlet("/todos")
 public class TodoServlet extends HttpServlet {
 
-    private final TodoRepository todoRepository;
+    private final TodoService todoService;
 
     public TodoServlet() {
-        this.todoRepository = new TodoRepositoryJdbc();
+        this.todoService = new TodoService();
     }
     
     @Override
@@ -33,7 +32,7 @@ public class TodoServlet extends HttpServlet {
         
         // (auth filter) the session is already garanteed and all its attributes are there
         
-        List<Todo> todos = todoRepository.findByUserId(userId);
+        List<Todo> todos = todoService.getTodos(userId);
         req.setAttribute("todos", todos);
         req.getRequestDispatcher("/todos.jsp").forward(req, resp);
     }

@@ -5,9 +5,9 @@
 package Services;
 
 import Data.User;
-import Exceptions.InvalidPasswordException;
+import Exceptions.IncorrectPasswordException;
 import Exceptions.PasswordNotConfirmedException;
-import Exceptions.UserAlreadyExistException;
+import Exceptions.UserAlreadyExistsException;
 import Exceptions.UserNotFoundException;
 import Models.LoginRequest;
 import Models.RegisterRequest;
@@ -27,7 +27,7 @@ public class AuthService {
         this.userRepository = new UserRepositoryJdbc();
     }
     
-    public User login(LoginRequest request) throws UserNotFoundException, InvalidPasswordException {
+    public User login(LoginRequest request) throws UserNotFoundException, IncorrectPasswordException {
         String username = request.getUsername();
         String password = request.getPassword();
         
@@ -39,7 +39,7 @@ public class AuthService {
                 // Password correct
                 return user;
             } else {
-                throw new InvalidPasswordException();
+                throw new IncorrectPasswordException();
             }
         } else {
             // invalid credentals
@@ -48,14 +48,14 @@ public class AuthService {
        
     }
     
-    public User register(RegisterRequest request) throws UserAlreadyExistException, PasswordNotConfirmedException {
+    public User register(RegisterRequest request) throws UserAlreadyExistsException, PasswordNotConfirmedException {
         String username = request.getUsername();
         String fullName = request.getFullName();
         String password = request.getPassword();
         String confirmPassowrd = request.getConfirmPassword();
         
         if(userRepository.findByUsername(username) != null) {
-            throw new UserAlreadyExistException();
+            throw new UserAlreadyExistsException();
         }
         
         if (password == null ? confirmPassowrd != null : !password.equals(confirmPassowrd)) {
