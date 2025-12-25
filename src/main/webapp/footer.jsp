@@ -1,7 +1,7 @@
 <%-- 
     Document   : footer
     Created on : Dec 24, 2025, 4:52:22 PM
-    Author     : admin
+    Author     : Mouad OUMOUS
 --%>
 
 </div> <!-- container -->

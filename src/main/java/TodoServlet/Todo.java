@@ -6,7 +6,7 @@ package TodoServlet;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public class Todo {
     

@@ -13,7 +13,7 @@ import java.sql.Statement;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 
 @WebListener
@@ -34,6 +34,7 @@ public class DatabaseIntializer implements ServletContextListener {
             String sqlUsersTable = "CREATE TABLE users (" +
                     "id INT AUTO_INCREMENT PRIMARY KEY," + 
                     "username VARCHAR(50) NOT NULL UNIQUE," + 
+                    "full_name VARCHAR(100) NOT NULL," +
                     "password VARCHAR(255) NOT NULL" + 
                     ");";
             
