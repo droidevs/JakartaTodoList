@@ -1,57 +1,77 @@
 <%-- 
     Document   : Todos
-    Created on : Dec 23, 2025, 4:14:54 PM
-    Author     : admin
+    Created on : Dec 24, 2025, 6:48:37 PM
+    Author     : Mouad OUMOUS
 --%>
-<%@page import="java.util.Collection"%>
-<%@page import="TodoServlet.Todo"%>
-<%@page import="java.util.List"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
-<html>
-<head>
-    <title>Todo List</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body class="p-4">
-    <div class="container mt-5">
+
+<%@ page import="java.util.*" %>
+<%@ page import="TodoServlet.Todo" %>
+
+<%@ include file="/header.jsp" %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Todos List</h2>
-    <a href="${pageContext.request.contextPath}/todo/create" class="btn btn-success mb-3">Add New Todo</a>
-
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-            Collection<Todo> todos = (Collection<Todo>) request.getAttribute("todos");
-            if (todos != null) {
-                for (Todo todo : todos) {
-        %>
-        <tr>
-            <td><%= todo.getTitle() %></td>
-            <td><%= todo.getDescription() %></td>
-            <td>
-                <form action="todo/create" method="get" style="display:inline;">
-                    <input type="hidden" name="id" value="<%=todo.getId()%>">
-                    <input class="btn btn-secondary btn-sm" type="submit" value="Edit">
-                </form>
-                <form action="todo/delete" method="get" style="display:inline;">
-                    <input type="hidden" name="id" value="<%= todo.getId() %>">
-                    <input class="btn btn-danger btn-sm" type="submit" value="Delete">
-                </form>
-            </td>
-        </tr>
-        <%      }
-            }
-        %>
-        </tbody>
-    </table>
+    <a href="todo/create" class="btn btn-primary">New Todo</a>
 </div>
-</body>
-</html>
 
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+    <tr>
+        <th style="width: 25%">Title</th>
+        <th>Description</th>
+        <th style="width: 25%">Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <%
+        Collection<Todo> todos =
+                (Collection<Todo>) request.getAttribute("todos");
+
+        if (todos == null || todos.isEmpty()) {
+    %>
+    <tr>
+        <td colspan="3" class="text-center text-muted">
+            No todos found.
+        </td>
+    </tr>
+    <%
+        } else {
+            for (Todo todo : todos) {
+    %>
+    <tr>
+        <td><%= todo.getTitle() %></td>
+        <td><%= todo.getDescription() %></td>
+
+        <td class="text-nowrap">
+
+            <!-- VIEW -->
+            <form action="todo/view" method="get" style="display:inline;">
+                <input type="hidden" name="id" value="<%= todo.getId() %>">
+                <button class="btn btn-info btn-sm">View</button>
+            </form>
+
+            <!-- EDIT -->
+            <form action="todo/create" method="get" style="display:inline;">
+                <input type="hidden" name="id" value="<%= todo.getId() %>">
+                <button class="btn btn-secondary btn-sm">Edit</button>
+            </form>
+
+            <!-- DELETE -->
+            <form action="todo/delete" method="get"
+                  style="display:inline;"
+                  onsubmit="return confirm('Delete this todo?');">
+                <input type="hidden" name="id" value="<%= todo.getId() %>">
+                <button class="btn btn-danger btn-sm">Delete</button>
+            </form>
+
+        </td>
+    </tr>
+    <%
+            }
+        }
+    %>
+    </tbody>
+</table>
+
+<%@ include file="/footer.jsp" %>
