@@ -23,7 +23,7 @@ import java.sql.SQLException;
  *
  * @author Mouad OUMOUS
  */
-@WebServlet("")
+@WebServlet("/signup")
 public class SignupServlet extends HttpServlet {
 
     

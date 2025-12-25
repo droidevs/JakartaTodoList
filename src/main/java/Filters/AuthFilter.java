@@ -28,8 +28,13 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
         
-        String path = req.getRequestURI();
+        String path = req.getRequestURI().substring(req.getContextPath().length());
         
+        if ("/".equals(path)) {
+            // Skip filtering for root path
+            chain.doFilter(request, response);
+            return;
+        }
         // Allow Login page and static resources
         if (path.contains("login") || path.contains("css") || path.contains("js")) {
             chain.doFilter(request, response);
@@ -38,6 +43,7 @@ public class AuthFilter implements Filter {
         
         HttpSession session = req.getSession();
         if (session == null || session.getAttribute("user") == null) {
+            System.out.println("login");
             resp.sendRedirect(req.getContextPath() + "/login.jsp");
         } else {
             chain.doFilter(request, response);

@@ -13,6 +13,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -27,14 +28,23 @@ public class HomeFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) sr;
         HttpServletResponse resp = (HttpServletResponse) sr1;
         
-        String path = req.getRequestURI();
+        HttpSession session = req.getSession(false);
+        
+        String path = req.getRequestURI().substring(req.getContextPath().length());
+       
+        System.out.println(path);
         
         if (path.equals("/") || path.isEmpty()) {
+            System.out.println(true);
             // The request is for the root of your web app
-            resp.sendRedirect(req.getContextPath() + "/todos");
-        } else {
-            chain.doFilter(sr, sr1);
+            if (session != null && session.getAttribute("user") != null) {
+                // User is signed in redirect to todos
+                resp.sendRedirect(req.getContextPath() + "/todos");
+                return;
+            }
         }
+        
+        chain.doFilter(sr, sr1);
     }
     
 }
