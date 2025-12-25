@@ -8,7 +8,7 @@ import Data.User;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public interface UserRepository {
     

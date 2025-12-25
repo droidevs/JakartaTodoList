@@ -9,7 +9,7 @@ import TodoServlet.Todo;
 import java.util.List;
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public interface TodoRepository {
     

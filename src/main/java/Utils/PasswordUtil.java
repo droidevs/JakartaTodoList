@@ -8,7 +8,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public class PasswordUtil {
     

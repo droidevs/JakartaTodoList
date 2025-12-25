@@ -6,7 +6,7 @@ package Models;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public class RegisterRequest {
     

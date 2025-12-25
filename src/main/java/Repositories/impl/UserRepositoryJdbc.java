@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public class UserRepositoryJdbc implements UserRepository {
     

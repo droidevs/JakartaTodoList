@@ -17,7 +17,7 @@ import Utils.PasswordUtil;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public class AuthService {
     

@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public class TodoRepositoryJdbc implements TodoRepository {
 

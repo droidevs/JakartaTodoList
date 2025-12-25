@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 @WebServlet("/")
 public class HomeServlet extends HttpServlet {

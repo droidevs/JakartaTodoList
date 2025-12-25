@@ -6,7 +6,7 @@ package Exceptions;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public class UserAlreadyExistException extends Exception{
 

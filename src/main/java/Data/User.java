@@ -6,7 +6,7 @@ package Data;
 
 /**
  *
- * @author admin
+ * @author Mouad OUMOUS
  */
 public class User {
     
