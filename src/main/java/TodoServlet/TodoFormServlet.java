@@ -4,6 +4,7 @@
  */
 package TodoServlet;
 
+import Data.Todo;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
 import java.io.IOException;

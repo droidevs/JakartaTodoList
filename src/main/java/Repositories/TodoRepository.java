@@ -5,7 +5,7 @@
 package Repositories;
 
 
-import TodoServlet.Todo;
+import Data.Todo;
 import java.util.List;
 /**
  *

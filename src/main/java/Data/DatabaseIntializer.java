@@ -30,6 +30,8 @@ public class DatabaseIntializer implements ServletContextListener {
                     "id INT AUTO_INCREMENT PRIMARY KEY," +
                     "title VARCHAR(255) NOT NULL," +
                     "description TEXT" +
+                    "status VARCHAR(20) NOT NULL DEFAULT 'NEW'" +
+                    "due_date DATE" +
                     ");";
             String sqlUsersTable = "CREATE TABLE users (" +
                     "id INT AUTO_INCREMENT PRIMARY KEY," + 

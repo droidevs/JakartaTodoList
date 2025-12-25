@@ -2,7 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package TodoServlet;
+package Data;
+
+import Constants.TodoStatus;
+import java.time.LocalDate;
 
 /**
  *
@@ -14,6 +17,8 @@ public class Todo {
     private String title;
     private String description;
     private Integer userId;
+    private TodoStatus status;
+    private LocalDate dueDate;
 
     public Todo() {
         id = -1;
@@ -42,6 +47,15 @@ public class Todo {
     public Integer getUserId() {
         return userId;
     }
+
+    public TodoStatus getStatus() {
+        return status;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+    
     
 
     public void setId(Integer id) {
@@ -58,6 +72,14 @@ public class Todo {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public void setStatus(TodoStatus status) {
+        this.status = status;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
     
    

@@ -4,14 +4,17 @@
  */
 package Repositories.impl;
 
+import Constants.TodoStatus;
 import Data.Database;
 import Repositories.TodoRepository;
-import TodoServlet.Todo;
+import Data.Todo;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,13 +70,19 @@ public class TodoRepositoryJdbc implements TodoRepository {
 
     @Override
     public void save(Todo todo) {
-        String sql = "INSERT INTO todos (title, description, user_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO todos (title, description, user_id, status, due_date) VALUES (?, ?, ?,?,?)";
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, todo.getTitle());
             ps.setString(2, todo.getDescription());
             ps.setInt(3, todo.getUserId());
+            ps.setString(4, todo.getStatus().name());
+            if (todo.getDueDate() != null) {
+                ps.setDate(5, Date.valueOf(todo.getDueDate()));
+            } else {
+                ps.setNull(5, Types.DATE);
+            }
             ps.executeUpdate();
 
             ResultSet keys = ps.getGeneratedKeys();
@@ -88,12 +97,18 @@ public class TodoRepositoryJdbc implements TodoRepository {
 
     @Override
     public void update(Todo todo) {
-        String sql = "UPDATE todos SET title = ?, description = ? WHERE id = ?";
+        String sql = "UPDATE todos SET title = ?, description = ?, status = ?, due_date = ? WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, todo.getTitle());
             ps.setString(2, todo.getDescription());
+            ps.setString(3, todo.getStatus().name());
+            if(todo.getDueDate() != null) {
+                ps.setDate(4, Date.valueOf(todo.getDueDate()));
+            } else {
+                ps.setNull(4, Types.DATE);
+            }
             ps.setInt(3, todo.getId());
             ps.executeUpdate();
 
@@ -121,6 +136,13 @@ public class TodoRepositoryJdbc implements TodoRepository {
         todo.setTitle(rs.getString("title"));
         todo.setDescription(rs.getString("description"));
         todo.setUserId(rs.getInt("user_id"));
+        String statusStr = rs.getString("status");
+        todo.setStatus(statusStr != null ? TodoStatus.valueOf(statusStr) : TodoStatus.NEW);
+        
+        Date due = rs.getDate("due_date");
+        if (due != null) {
+            todo.setDueDate(due.toLocalDate());
+        }
         return todo;
     }
 

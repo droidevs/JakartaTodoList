@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package TodoServlet;
+import Data.Todo;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
 import jakarta.servlet.ServletException;
