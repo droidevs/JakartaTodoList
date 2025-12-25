@@ -6,8 +6,10 @@ package TodoServlet;
 
 import Data.Database;
 import Data.User;
+import Models.LoginRequest;
 import Repositories.UserRepository;
 import Repositories.impl.UserRepositoryJdbc;
+import Services.AuthService;
 import Utils.PasswordUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,10 +31,10 @@ import java.sql.SQLException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    private final UserRepository userRepository;
+    private final AuthService service;
 
     public LoginServlet() {
-        userRepository = new UserRepositoryJdbc();
+        service = new AuthService();
     }
     
     @Override
@@ -49,29 +51,16 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            User user = userRepository.findByUsername(username);
+            User user = service.login(new LoginRequest(username, password));
 
-            if (user != null) {
-                String hashedPassword = user.getPasswordHash();
-                if (PasswordUtil.verifyPassword(password, hashedPassword)) {
-                    // Password correct
-                    HttpSession session = request.getSession();
-                    session.setAttribute("userId", ""+user.getId());
-                    session.setAttribute("user", username);
-                    response.sendRedirect(request.getContextPath() + "/todos");
-                    
-                } else {
-                    request.setAttribute("error", "Invalid username or password");
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
-                }
-            } else {
-                // invalid credentals
-                request.setAttribute("error", "User does not exist with this username please signup");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
-            }
+            HttpSession session = request.getSession();
+            session.setAttribute("userId", "" + user.getId());
+            session.setAttribute("user", username);
+            response.sendRedirect(request.getContextPath() + "/todos");
 
         } catch (Exception e) {
-            throw new ServletException(e);
+            request.setAttribute("error", e.getMessage());
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 }
