@@ -4,6 +4,8 @@
  */
 package TodoServlet;
 
+import Repositories.TodoRepository;
+import Repositories.impl.TodoRepositoryJdbc;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,6 +21,11 @@ import java.util.Objects;
 @WebServlet("/todo/view")
 public class ViewTodoServlet extends HttpServlet {
 
+    private final TodoRepository todoRepository;
+
+    public ViewTodoServlet() {
+        this.todoRepository = new TodoRepositoryJdbc();
+    }
     
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -39,7 +46,7 @@ public class ViewTodoServlet extends HttpServlet {
         System.out.println(request.getParameter("id"));
         try {
             id = Integer.valueOf(request.getParameter("id"));
-            var todoUser = TodoStore.getUserIdForTodo(id);
+            var todoUser = todoRepository.getUserIdForTodo(id);
             var sessionUser = (Integer) request.getSession().getAttribute("userId");
             if(!Objects.equals(todoUser, sessionUser)){
                 response.sendError(HttpServletResponse.SC_FORBIDDEN,
@@ -51,7 +58,7 @@ public class ViewTodoServlet extends HttpServlet {
             return;
         }
         
-        Todo todo = TodoStore.getTodo(id);
+        Todo todo = todoRepository.findById(id);
         
         if (todo == null) {
             response.sendRedirect(request.getContextPath()+ "/todos");

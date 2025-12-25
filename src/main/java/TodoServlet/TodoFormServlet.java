@@ -4,6 +4,8 @@
  */
 package TodoServlet;
 
+import Repositories.TodoRepository;
+import Repositories.impl.TodoRepositoryJdbc;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -21,6 +23,12 @@ import java.util.Objects;
 @WebServlet("/todo/create")
 public class TodoFormServlet extends HttpServlet {
 
+    private final TodoRepository todoRepository;
+
+    public TodoFormServlet() {
+        this.todoRepository = new TodoRepositoryJdbc();
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -40,7 +48,7 @@ public class TodoFormServlet extends HttpServlet {
             id = Integer.valueOf(request.getParameter("id"));
             // if the id is there then we are in the edit mode 
             // we check if the edited resource is for the logged in user
-            var todoUser = TodoStore.getUserIdForTodo(id);
+            var todoUser = todoRepository.getUserIdForTodo(id);
             var sessionUser = (Integer) request.getSession().getAttribute("userId");
             if(!Objects.equals(todoUser, sessionUser)){
                 response.sendError(HttpServletResponse.SC_FORBIDDEN,
@@ -53,7 +61,7 @@ public class TodoFormServlet extends HttpServlet {
         
         Todo todo = new Todo();
         if (id != -1) {
-            var o = TodoStore.getTodo(id);
+            var o = todoRepository.findById(id);
             if (o != null) {
                 todo = o;
             }
@@ -89,7 +97,7 @@ public class TodoFormServlet extends HttpServlet {
         
         try {
             id = Integer.valueOf(request.getParameter("id"));
-            var todoUser = TodoStore.getUserIdForTodo(id);
+            var todoUser = todoRepository.getUserIdForTodo(id);
             if(!Objects.equals(todoUser, sessionUser)){
                 response.sendError(HttpServletResponse.SC_FORBIDDEN,
                         "You are not allowed to access this resource");
@@ -109,10 +117,10 @@ public class TodoFormServlet extends HttpServlet {
         
         if (errors.isEmpty()) {
             if (id != 0) {
-                TodoStore.updateTodo(todo);
+                todoRepository.update(todo);
             } else {
                 todo.setUserId(sessionUser);
-                TodoStore.addTodo(todo);
+                todoRepository.save(todo);
             }
             response.sendRedirect(request.getContextPath() + "/todos");
         } else {

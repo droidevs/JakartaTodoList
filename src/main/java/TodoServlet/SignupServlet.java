@@ -5,6 +5,9 @@
 package TodoServlet;
 
 import Data.Database;
+import Data.User;
+import Repositories.UserRepository;
+import Repositories.impl.UserRepositoryJdbc;
 import Utils.PasswordUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,6 +30,12 @@ import java.sql.SQLException;
 @WebServlet("/signup")
 public class SignupServlet extends HttpServlet {
 
+    private final UserRepository userRepository;
+
+    public SignupServlet() {
+        this.userRepository = new UserRepositoryJdbc();
+    }
+
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -34,6 +43,7 @@ public class SignupServlet extends HttpServlet {
         response.sendRedirect("signup.jsp");
     }
     
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException , IOException {
         
@@ -45,13 +55,9 @@ public class SignupServlet extends HttpServlet {
         
         // TODO: hash the password (recommanded : BCrypt)
         try(Connection conn = Database.getConnection()) {
-            String sql = "SELECT id FROM users username = ?";
-            PreparedStatement checkStmt = conn.prepareStatement(sql);
+            User user = userRepository.findByUsername(username);
             
-            checkStmt.setString(1, username);
-            ResultSet rs = checkStmt.executeQuery();
-            
-            if (rs.next()) {
+            if (user != null) {
                 req.setAttribute("error", "Username already exists");
                 req.getRequestDispatcher("signup.jsp").forward(req, resp);
                 return;
@@ -59,15 +65,15 @@ public class SignupServlet extends HttpServlet {
             
             String insertSql = "INSERT INTO users (username, full_name, password) VALUES (?, ?, ?)";
             
-            PreparedStatement insertStmt = conn.prepareStatement(insertSql);
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.setFullName(fullname);
+            newUser.setPasswordHash(hashedPassword);
             
-            insertStmt.setString(1, username);
-            insertStmt.setString(2, fullname);
-            insertStmt.setString(3, hashedPassword); // TODO: store hashed password
-            insertStmt.executeUpdate();
-            
+            userRepository.save(newUser);
             
             HttpSession session = req.getSession();
+            session.setAttribute("uderId", newUser.getId());
             session.setAttribute("user", username);
             resp.sendRedirect(req.getContextPath() + "/todos");
             

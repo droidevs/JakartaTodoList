@@ -4,6 +4,8 @@
  */
 package TodoServlet;
 
+import Repositories.UserRepository;
+import Repositories.impl.UserRepositoryJdbc;
 import java.io.IOException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,7 +20,6 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
-    
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

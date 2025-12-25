@@ -4,6 +4,8 @@
  */
 package TodoServlet;
 
+import Repositories.TodoRepository;
+import Repositories.impl.TodoRepositoryJdbc;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -21,6 +23,12 @@ import java.util.Objects;
 public class DeleteTodoServlet extends HttpServlet {
 
 
+    private final TodoRepository todoRepository;
+
+    public DeleteTodoServlet() {
+        this.todoRepository = new TodoRepositoryJdbc();
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -36,7 +44,7 @@ public class DeleteTodoServlet extends HttpServlet {
         Integer id;
         try {
             id = Integer.valueOf(request.getParameter("id"));
-            var todoUser = TodoStore.getUserIdForTodo(id);
+            var todoUser = todoRepository.getUserIdForTodo(id);
             var sessionUser = (Integer) request.getSession().getAttribute("userId");
             if(!Objects.equals(todoUser, sessionUser)){
                 response.sendError(HttpServletResponse.SC_FORBIDDEN,
@@ -48,7 +56,7 @@ public class DeleteTodoServlet extends HttpServlet {
         }
        
         if (id > 0) {
-            TodoStore.deleteTodo(id);
+            todoRepository.delete(id);
         }
         
         response.sendRedirect(request.getContextPath()+"/todos");

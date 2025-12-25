@@ -5,6 +5,9 @@
 package TodoServlet;
 
 import Data.Database;
+import Data.User;
+import Repositories.UserRepository;
+import Repositories.impl.UserRepositoryJdbc;
 import Utils.PasswordUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,30 +29,34 @@ import java.sql.SQLException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
+    private final UserRepository userRepository;
+
+    public LoginServlet() {
+        userRepository = new UserRepositoryJdbc();
+    }
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.sendRedirect("login.jsp");
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        try (Connection conn = Database.getConnection()) {
-            String sql = "SELECT id, password FROM users WHERE username = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, username);
-            ResultSet rs = ps.executeQuery();
+        try {
+            User user = userRepository.findByUsername(username);
 
-            if (rs.next()) {
-                String hashedPassword = rs.getString("password");
+            if (user != null) {
+                String hashedPassword = user.getPasswordHash();
                 if (PasswordUtil.verifyPassword(password, hashedPassword)) {
                     // Password correct
                     HttpSession session = request.getSession();
-                    session.setAttribute("userId", ""+rs.getInt("id"));
+                    session.setAttribute("userId", ""+user.getId());
                     session.setAttribute("user", username);
                     response.sendRedirect(request.getContextPath() + "/todos");
                     
@@ -63,7 +70,7 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new ServletException(e);
         }
     }
