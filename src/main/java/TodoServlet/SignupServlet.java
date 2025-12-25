@@ -5,6 +5,7 @@
 package TodoServlet;
 
 import Data.Database;
+import Utils.PasswordUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -40,6 +41,8 @@ public class SignupServlet extends HttpServlet {
         String fullname = req.getParameter("fullname");
         String password = req.getParameter("password");
         
+        String hashedPassword = PasswordUtil.hashPassword(password);
+        
         // TODO: hash the password (recommanded : BCrypt)
         try(Connection conn = Database.getConnection()) {
             String sql = "SELECT id FROM users username = ?";
@@ -58,9 +61,9 @@ public class SignupServlet extends HttpServlet {
             
             PreparedStatement insertStmt = conn.prepareStatement(insertSql);
             
-            insertStmt.setString(0, username);
-            insertStmt.setString(1, fullname);
-            insertStmt.setString(2, password); // TODO: store hashed password
+            insertStmt.setString(1, username);
+            insertStmt.setString(2, fullname);
+            insertStmt.setString(3, hashedPassword); // TODO: store hashed password
             insertStmt.executeUpdate();
             
             

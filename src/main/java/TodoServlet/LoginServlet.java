@@ -5,6 +5,7 @@
 package TodoServlet;
 
 import Data.Database;
+import Utils.PasswordUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -25,36 +26,42 @@ import java.sql.SQLException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-                throws ServletException, IOException {
+            throws ServletException, IOException {
         response.sendRedirect("login.jsp");
     }
-    
-    
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        
-        try(Connection conn = Database.getConnection()) {
-            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+
+        try (Connection conn = Database.getConnection()) {
+            String sql = "SELECT password FROM users WHERE username = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(0, username);
-            ps.setString(0, password); // todo : hash the password
+            ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", username);
-                response.sendRedirect(request.getContextPath()+ "/todos");
+                String hashedPassword = rs.getString("password");
+                if (PasswordUtil.verifyPassword(password, hashedPassword)) {
+                    // Password correct
+                    HttpSession session = request.getSession();
+                    session.setAttribute("user", username);
+                    response.sendRedirect(request.getContextPath() + "/todos");
+                    
+                } else {
+                    request.setAttribute("error", "Invalid username or password");
+                    request.getRequestDispatcher("login.jsp").forward(request, response);
+                }
             } else {
                 // invalid credentals
-                request.setAttribute("error", "Invalid username or password");
+                request.setAttribute("error", "User does not exist with this username please signup");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
+
         } catch (SQLException e) {
             throw new ServletException(e);
         }
