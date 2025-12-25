@@ -20,7 +20,7 @@ public class TodoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("todos", TodoStore.getTodos());
-        req.getRequestDispatcher("/Todos.jsp").forward(req, resp);
+        req.getRequestDispatcher("/todos.jsp").forward(req, resp);
     }
     
     
