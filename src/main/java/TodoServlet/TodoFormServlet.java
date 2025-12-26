@@ -6,6 +6,7 @@ package TodoServlet;
 
 import Constants.TodoStatus;
 import Data.Todo;
+import Errors.BusinessErrorMapper;
 import Exceptions.ArgumentRequiredException;
 import Exceptions.InvalidDueDateException;
 import Exceptions.ResourceNotFoundException;
@@ -16,6 +17,7 @@ import Models.UpdateTodoRequest;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
 import Services.TodoService;
+import Utils.ExceptionHandlerUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -74,8 +76,7 @@ public class TodoFormServlet extends HttpServlet {
             request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
 
         } catch (Exception e) {
-            request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher("TodoForm.jsp").forward(request, response);
+            ExceptionHandlerUtil.handle(request, response, e, "TodoForm.jsp");
         }
 
     }
@@ -91,8 +92,7 @@ public class TodoFormServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Map<String, String> errors = new HashMap();
-
+        
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         String dueDateStr = request.getParameter("dueDate");
@@ -103,19 +103,7 @@ public class TodoFormServlet extends HttpServlet {
         if (dueDateStr != null && !dueDateStr.isBlank()) {
             dueDate = LocalDate.parse(dueDateStr);
         }
-
-        if (title == null || title.trim().isBlank()) {
-            errors.put("title", "Title is required");
-        }
-        if (description == null || description.trim().isBlank()) {
-            errors.put("description", "description is required");
-        }
-
-        if (!errors.isEmpty()) {
-            request.setAttribute("errors", errors);
-            getServletContext().getRequestDispatcher("/TodoForm.jsp").forward(request, response);
-            return;
-        }
+        
         var sessionUser = (Integer) request.getSession().getAttribute("userId");
         Integer id = null;
 
@@ -125,12 +113,8 @@ public class TodoFormServlet extends HttpServlet {
             todoService.updateTodo(updateRequest, sessionUser);
         } catch (NumberFormatException e) {
             id = -1;
-        } catch (TodoValidationException e) {
-            request.setAttribute("errors", e.getViolations());
-            request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
         } catch (Exception e) {
-            request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
+            ExceptionHandlerUtil.handle(request, response, e, "TodoForm.jsp");
             return;
         }
 
@@ -138,12 +122,8 @@ public class TodoFormServlet extends HttpServlet {
             var createRequest = new CreateTodoRequest(title, description, TodoStatus.NEW, dueDate);
             try {
                 todoService.createTodo(createRequest, sessionUser);
-            } catch (TodoValidationException e) {
-                request.setAttribute("errors", e.getViolations());
-                request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
-            } catch (Exception e) {
-                request.setAttribute("error", e.getMessage());
-                request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
+            }catch (Exception e) {
+                ExceptionHandlerUtil.handle(request, response, e, "/TodoForm.jsp");
                 return;
             }
 

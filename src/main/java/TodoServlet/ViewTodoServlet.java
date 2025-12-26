@@ -6,6 +6,7 @@ package TodoServlet;
 
 import Models.GetTodoRequest;
 import Services.TodoService;
+import Utils.ExceptionHandlerUtil;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -55,10 +56,8 @@ public class ViewTodoServlet extends HttpServlet {
             
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath()+ "/todos");
-            return;
         } catch(Exception e) {
-            request.setAttribute("error",e.getMessage());
-            request.getRequestDispatcher("/TodoView.jsp").forward(request, response);
+            ExceptionHandlerUtil.handle(request, response, e, "TodoView.jsp");
         }
     }
     

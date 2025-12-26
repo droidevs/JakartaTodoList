@@ -9,6 +9,7 @@ import Models.DeleteTodoRequest;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
 import Services.TodoService;
+import Utils.ExceptionHandlerUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -52,9 +53,9 @@ public class DeleteTodoServlet extends HttpServlet {
             todoService.deleteTodo(deleteRequest, sessionUser);
         } catch (NumberFormatException e) {
             id = -1;
-        } catch (ActionDeniedException e) {
-            request.setAttribute("error", e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/todos");
+        } catch (Exception e) {
+            ExceptionHandlerUtil.handle(request, response, e, null);
+            return;
         }
         
         response.sendRedirect(request.getContextPath()+"/todos");

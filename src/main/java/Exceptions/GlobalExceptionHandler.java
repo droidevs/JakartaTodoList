@@ -36,18 +36,20 @@ public class GlobalExceptionHandler extends HttpServlet {
 
         Throwable throwable = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
         Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
+        String message = (String) request.getAttribute("javax.servlet.error.message");
         String servletName = (String) request.getAttribute("jakarta.servlet.error.servlet_name");
         String requestUri = (String) request.getAttribute("jakarta.servlet.error.request_uri");
 
         if (servletName == null) servletName = "Unknown";
 
         request.setAttribute("statusCode", statusCode);
+        request.setAttribute("message", message);
         request.setAttribute("exception", throwable);
         request.setAttribute("servletName", servletName);
         request.setAttribute("requestUri", requestUri);
 
         // Forward to a friendly JSP
-        request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
+        request.getRequestDispatcher("/error.jsp").forward(request, response);
     }
 }
 
