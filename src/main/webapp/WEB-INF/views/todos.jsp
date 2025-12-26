@@ -1,33 +1,39 @@
 <%-- 
     Document   : Todos
     Created on : Dec 24, 2025, 6:48:37 PM
-    Author     : admin
+    Author     : Mouad OUMOUS
 --%>
 
+<%@page import="Constants.TodoStatus"%>
+<%@page import="Data.Todo"%>
 <%@ page import="java.util.*" %>
-<%@ page import="TodoServlet.Todo" %>
 
-<%@ include file="/header.jsp" %>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
+
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Todos List</h2>
     <a href="todo/create" class="btn btn-primary">New Todo</a>
 </div>
 
+<%
+    List<Todo> todos = (List<Todo>) request.getAttribute("todos");
+%>
+
+
 <table class="table table-bordered table-hover align-middle">
     <thead class="table-dark">
     <tr>
         <th style="width: 25%">Title</th>
         <th>Description</th>
+        <th style="width: 10%">Due Date</th>
+        <th style="width: 10%">Status</th>
         <th style="width: 25%">Actions</th>
     </tr>
     </thead>
 
     <tbody>
     <%
-        Collection<Todo> todos =
-                (Collection<Todo>) request.getAttribute("todos");
-
         if (todos == null || todos.isEmpty()) {
     %>
     <tr>
@@ -42,7 +48,28 @@
     <tr>
         <td><%= todo.getTitle() %></td>
         <td><%= todo.getDescription() %></td>
-
+        <td><%= todo.getDueDate() != null ? todo.getDueDate() : "-" %></td>
+        <td>
+            <span class="badge 
+                    <%= todo.getStatus() == TodoStatus.NEW ? "bg-primary" :
+                        todo.getStatus() == TodoStatus.IN_PROGRESS ? "bg-warning" :
+                        todo.getStatus() == TodoStatus.COMPLETED ? "bg-success" :
+                        "bg-danger" %>">
+                    <%= todo.getStatus().name().replace("_", " ") %>
+                </span>
+        </td>
+        
+        <!-- Status update form -->
+        <form action="todo/status" method="post" style="display:inline;">
+            <input type="hidden" name="id" value="<%= todo.getId() %>">
+            <select name="status" class="form-select form-select-sm d-inline w-auto">
+                <% for(TodoStatus s : TodoStatus.values()){ %>
+                    <option value="<%= s.name() %>" <%= s == todo.getStatus() ? "selected" : "" %>><%= s.name().replace("_", " ") %></option>
+                <% } %>
+            </select>
+            <button class="btn btn-sm btn-primary">Update</button>
+        </form>
+    
         <td class="text-nowrap">
 
             <!-- VIEW -->
@@ -74,4 +101,5 @@
     </tbody>
 </table>
 
-<%@ include file="/footer.jsp" %>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>
+

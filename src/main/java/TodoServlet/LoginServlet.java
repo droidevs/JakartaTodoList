@@ -10,7 +10,9 @@ import Models.LoginRequest;
 import Repositories.UserRepository;
 import Repositories.impl.UserRepositoryJdbc;
 import Services.AuthService;
+import Utils.ExceptionHandlerUtil;
 import Utils.PasswordUtil;
+import View.ViewResolver;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -59,8 +61,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/todos");
 
         } catch (Exception e) {
-            request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            ExceptionHandlerUtil.handle(request, response, e, ViewResolver.LOGIN);
         }
     }
 }

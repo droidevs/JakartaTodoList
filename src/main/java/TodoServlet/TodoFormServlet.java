@@ -18,6 +18,8 @@ import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
 import Services.TodoService;
 import Utils.ExceptionHandlerUtil;
+import View.ViewDispatcher;
+import View.ViewResolver;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -73,8 +75,7 @@ public class TodoFormServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             request.setAttribute("todo", new Todo());
             // Show the form page
-            request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
-
+            ViewDispatcher.dispatch(request, response, ViewResolver.TODO_FORM);
         } catch (Exception e) {
             ExceptionHandlerUtil.handle(request, response, e, "TodoForm.jsp");
         }
@@ -123,7 +124,7 @@ public class TodoFormServlet extends HttpServlet {
             try {
                 todoService.createTodo(createRequest, sessionUser);
             }catch (Exception e) {
-                ExceptionHandlerUtil.handle(request, response, e, "/TodoForm.jsp");
+                ExceptionHandlerUtil.handle(request, response, e, ViewResolver.TODO_FORM);
                 return;
             }
 

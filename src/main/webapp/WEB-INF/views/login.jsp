@@ -5,7 +5,10 @@
 --%>
 
 
-<%@ include file="header.jsp"%>
+<%@page import="View.ViewResolver"%>
+
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
+
 
 <h2>Login</h2>
 <form action="login" method="post">
@@ -24,4 +27,5 @@
     <div class="alert alert-danger mt-3"><%= error %></div>
 <% } %>
 
-<%@ include file="footer.jsp"%>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>
+

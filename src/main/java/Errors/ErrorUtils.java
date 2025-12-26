@@ -4,6 +4,7 @@
  */
 package Errors;
 
+import View.ViewDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,7 +45,7 @@ public class ErrorUtils {
                                         String message) {
         try {
             request.setAttribute(errorAttribute, message);
-            request.getRequestDispatcher(page).forward(request, response);
+            ViewDispatcher.dispatch(request, response, page);
         } catch (ServletException | IOException ex) {
             ex.printStackTrace();
         }

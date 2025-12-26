@@ -7,6 +7,8 @@ package TodoServlet;
 import Data.User;
 import Models.RegisterRequest;
 import Services.AuthService;
+import View.ViewDispatcher;
+import View.ViewResolver;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -52,7 +54,8 @@ public class SignupServlet extends HttpServlet {
 
         } catch (Exception e) {
             req.setAttribute("error", e.getMessage());
-            req.getRequestDispatcher("signup.jsp").forward(req, resp);
+            ViewDispatcher.dispatch(req, resp, ViewResolver.SIGNUP);
+
             
         }
     }

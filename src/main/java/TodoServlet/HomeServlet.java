@@ -4,6 +4,8 @@
  */
 package TodoServlet;
 
+import View.ViewDispatcher;
+import View.ViewResolver;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -21,7 +23,7 @@ public class HomeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/index.jsp").forward(req, resp);
+        ViewDispatcher.dispatch(req, resp, ViewResolver.TODOS);
     }
     
 }

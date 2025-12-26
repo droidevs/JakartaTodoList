@@ -6,7 +6,9 @@
 
 
 
-<%@ include file="header.jsp"%>
+<%@page import="View.ViewResolver"%>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
+
 
 <h1 class="mb-4">Welcome to Todo App</h1>
 <p class="lead mb-4">Organize your tasks efficiently and never miss a deadline!</p>
@@ -28,4 +30,5 @@
     </ul>
 </div>
 
-<%@ include file="footer.jsp"%>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>
+

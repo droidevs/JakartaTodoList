@@ -4,10 +4,11 @@
     Author     : Mouad OUMOUS
 --%>
 
+<%@page import="View.ViewResolver"%>
 <%@page import="Constants.TodoStatus"%>
 <%@page import="Data.Todo"%>
 
-<%@ include file="header.jsp" %>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>" %>
 
 <h2>Create a New ToDo</h2>
 <form action="${pageContext.request.contextPath}/todo/create" method="post">
@@ -84,4 +85,4 @@
     </div>
 <% } %>
 
-<%@ include file="footer.jsp" %>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>" %>

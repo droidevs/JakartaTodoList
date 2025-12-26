@@ -4,7 +4,10 @@
     Author     : Mouad OUMOUS
 --%>
 
-<%@ include file="header.jsp"%>
+<%@page import="View.ViewResolver"%>
+
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
+
 
 <h2>Create an Account</h2>
 <form action="signup" method="post">
@@ -29,4 +32,4 @@
 <% } %>
 
 
-<%@ include file="footer.jsp"%>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>

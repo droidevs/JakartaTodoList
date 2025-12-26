@@ -5,6 +5,8 @@
 package TodoServlet;
 import Data.Todo;
 import Services.TodoService;
+import View.ViewDispatcher;
+import View.ViewResolver;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -35,7 +37,8 @@ public class TodoServlet extends HttpServlet {
         
         List<Todo> todos = todoService.getTodos(userId);
         req.setAttribute("todos", todos);
-        req.getRequestDispatcher("/todos.jsp").forward(req, resp);
+        ViewDispatcher.dispatch(req, resp, ViewResolver.TODOS);
+
     }
     
     

@@ -6,8 +6,9 @@
 
 
 
-<%@page import="TodoServlet.Todo"%>
-<%@ include file="header.jsp"%>
+<%@page import="View.ViewResolver"%>
+<%@page import="Data.Todo"%>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
 
 <h3>View Todo</h3>
 
@@ -22,3 +23,4 @@
         <a href="${request.getContextPath()+"/todos"}" class="btn btn-secondary">Back</a>
     </div>
 </div>
+<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>
