@@ -7,6 +7,8 @@ package Services;
 import Constants.TodoStatus;
 import Data.Todo;
 import Exceptions.ActionDeniedException;
+import Exceptions.ArgumentRequiredException;
+import Exceptions.InvalidDueDateException;
 import Exceptions.ResourceAccessDeniedException;
 import Exceptions.ResourceNotFoundException;
 import Models.CreateTodoRequest;
@@ -56,8 +58,11 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public Todo createTodo(CreateTodoRequest request, Integer sessionUser) {
+    public Todo createTodo(CreateTodoRequest request, Integer sessionUser) throws InvalidDueDateException, ArgumentRequiredException {
         Todo todo = new Todo();
+        
+        validateDueDate(request.getDueDate());
+        
         todo.setTitle(request.getTitle());
         todo.setDescription(request.getDescription());
         todo.setStatus(request.getStatus());
@@ -67,7 +72,7 @@ public class TodoService {
         return todo;
     }
 
-    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ActionDeniedException {
+    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ActionDeniedException, InvalidDueDateException, ArgumentRequiredException {
         Integer id = request.getId();
         var todoUser = todoRepository.getUserIdForTodo(id);
         if (!Objects.equals(todoUser, sessionUser)) {
@@ -80,6 +85,11 @@ public class TodoService {
                     !Objects.equals(todo.getDueDate(), request.getDueDate())) {
             throw new ActionDeniedException();
         }
+        
+        validateStatusTransition(todo.getStatus(), request.getStatus(), request.getDueDate());
+        
+        validateDueDate(request.getDueDate());
+        
         todo.setTitle(request.getTitle());
         todo.setDescription(request.getDescription());
         
@@ -126,6 +136,16 @@ public class TodoService {
                 t.setStatus(TodoStatus.OVERDUE);
                 todoRepository.update(t);
             }
+        }
+    }
+    
+    private void validateDueDate(LocalDate dueDate) throws InvalidDueDateException, ArgumentRequiredException{
+        if(dueDate == null) {
+            throw new ArgumentRequiredException();
+        }
+        
+        if (dueDate.isBefore(LocalDate.now())) {
+            throw new InvalidDueDateException();
         }
     }
     

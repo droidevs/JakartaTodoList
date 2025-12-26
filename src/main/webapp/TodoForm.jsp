@@ -35,7 +35,8 @@
                name="dueDate"
                class="form-control"
                value="<%= todo.getDueDate()%>"
-               <%= todo.getStatus() == TodoStatus.OVERDUE ? "disabled" : ""%>>
+               <%= todo.getStatus() == TodoStatus.OVERDUE ? "disabled" : ""%>
+               min="<%= java.time.LocalDate.now() %>">
     </div>
     <div class="mb-3">
         <label>Status</label>

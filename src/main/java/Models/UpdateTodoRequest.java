@@ -4,6 +4,7 @@
  */
 package Models;
 
+import Constants.TodoStatus;
 import java.time.LocalDate;
 
 /**
@@ -16,6 +17,7 @@ public class UpdateTodoRequest {
     String title;
     String description;
     LocalDate dueDate;
+    TodoStatus status;
 
     public UpdateTodoRequest() {
     }
@@ -32,6 +34,15 @@ public class UpdateTodoRequest {
         this.description = description;
         this.dueDate = dueDate;
     }
+
+    public UpdateTodoRequest(Integer id, String title, String description, LocalDate dueDate, TodoStatus status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.status = status;
+    }
+    
     
     
 
@@ -50,6 +61,11 @@ public class UpdateTodoRequest {
     public LocalDate getDueDate() {
         return dueDate;
     }
+
+    public TodoStatus getStatus() {
+        return status;
+    }
+    
     
     
 
@@ -68,8 +84,10 @@ public class UpdateTodoRequest {
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
-    
-    
+
+    public void setStatus(TodoStatus status) {
+        this.status = status;
+    }
     
     
 }
