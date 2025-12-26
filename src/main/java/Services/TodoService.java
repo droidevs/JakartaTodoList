@@ -17,6 +17,7 @@ import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,7 +67,7 @@ public class TodoService {
         return todo;
     }
 
-    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException {
+    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ActionDeniedException {
         Integer id = request.getId();
         var todoUser = todoRepository.getUserIdForTodo(id);
         if (!Objects.equals(todoUser, sessionUser)) {
@@ -74,8 +75,17 @@ public class TodoService {
         }
 
         var todo = todoRepository.findById(request.getId());
+        
+        if(todo.getStatus() == TodoStatus.OVERDUE &&
+                    !Objects.equals(todo.getDueDate(), request.getDueDate())) {
+            throw new ActionDeniedException();
+        }
         todo.setTitle(request.getTitle());
         todo.setDescription(request.getDescription());
+        
+        if(todo.getStatus() != TodoStatus.OVERDUE) {
+            todo.setDueDate(request.getDueDate());
+        }
         todoRepository.save(todo);
         return todo;
     }
@@ -91,6 +101,9 @@ public class TodoService {
         Todo todo;
         try {
             todo = getTodo(new GetTodoRequest(todoId), userId);
+            
+            validateStatusTransition(todo.getStatus(), status, todo.getDueDate());
+            
             todo.setStatus(status);
             todoRepository.update(todo);
         } catch (ResourceAccessDeniedException ex) {
@@ -113,6 +126,33 @@ public class TodoService {
                 t.setStatus(TodoStatus.OVERDUE);
                 todoRepository.update(t);
             }
+        }
+    }
+    
+    private void validateStatusTransition(TodoStatus oldStatus, TodoStatus newStatus, LocalDate oldDueDate) throws ActionDeniedException {
+        
+        if (oldStatus == TodoStatus.COMPLETED && oldStatus != newStatus) {
+            throw new ActionDeniedException();
+        }
+        
+        // Cannot go back to new
+        if (newStatus == TodoStatus.NEW && oldStatus != TodoStatus.NEW) {
+            throw new ActionDeniedException();
+        }
+        
+        if (oldStatus == TodoStatus.COMPLETED && newStatus == TodoStatus.IN_PROGRESS) {
+            throw new ActionDeniedException();
+        }
+        
+        if (oldStatus == TodoStatus.OVERDUE && newStatus == TodoStatus.COMPLETED) {
+            if (oldDueDate == null || ChronoUnit.DAYS.between(oldDueDate, LocalDate.now()) < 3) {
+                throw new ActionDeniedException();
+            }
+        }
+        
+        if (oldStatus == TodoStatus.OVERDUE &&
+            newStatus == TodoStatus.NEW || newStatus == TodoStatus.IN_PROGRESS) {
+            throw new ActionDeniedException();
         }
     }
 }

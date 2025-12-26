@@ -4,6 +4,8 @@
  */
 package Models;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author admin
@@ -13,6 +15,7 @@ public class UpdateTodoRequest {
     Integer id;
     String title;
     String description;
+    LocalDate dueDate;
 
     public UpdateTodoRequest() {
     }
@@ -22,6 +25,15 @@ public class UpdateTodoRequest {
         this.title = title;
         this.description = description;
     }
+
+    public UpdateTodoRequest(Integer id, String title, String description, LocalDate dueDate) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+    }
+    
+    
 
     public Integer getId() {
         return id;
@@ -35,6 +47,12 @@ public class UpdateTodoRequest {
         return title;
     }
 
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+    
+    
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -46,6 +64,12 @@ public class UpdateTodoRequest {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+    
+    
     
     
 }
