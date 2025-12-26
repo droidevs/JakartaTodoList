@@ -4,8 +4,11 @@
  */
 package TodoServlet;
 
+import Exceptions.ActionDeniedException;
+import Models.DeleteTodoRequest;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
+import Services.TodoService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -23,10 +26,10 @@ import java.util.Objects;
 public class DeleteTodoServlet extends HttpServlet {
 
 
-    private final TodoRepository todoRepository;
+    private final TodoService todoService;
 
     public DeleteTodoServlet() {
-        this.todoRepository = new TodoRepositoryJdbc();
+        this.todoService = new TodoService();
     }
     
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -44,19 +47,14 @@ public class DeleteTodoServlet extends HttpServlet {
         Integer id;
         try {
             id = Integer.valueOf(request.getParameter("id"));
-            var todoUser = todoRepository.getUserIdForTodo(id);
-            var sessionUser = (Integer) request.getSession().getAttribute("userId");
-            if(!Objects.equals(todoUser, sessionUser)){
-                response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                        "You are not allowed to delete this resource");
-                return;
-            }
+            Integer sessionUser = (Integer) request.getSession().getAttribute("userId");
+            var deleteRequest = new DeleteTodoRequest(id);
+            todoService.deleteTodo(deleteRequest, sessionUser);
         } catch (NumberFormatException e) {
-            id = 0;
-        }
-       
-        if (id > 0) {
-            todoRepository.delete(id);
+            id = -1;
+        } catch (ActionDeniedException e) {
+            request.setAttribute("error", e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/todos");
         }
         
         response.sendRedirect(request.getContextPath()+"/todos");

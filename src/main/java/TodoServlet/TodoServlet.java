@@ -31,6 +31,7 @@ public class TodoServlet extends HttpServlet {
         Integer userId = (Integer) session.getAttribute("userId");
         
         // (auth filter) the session is already garanteed and all its attributes are there
+        todoService.markOverdueTodos(userId);
         
         List<Todo> todos = todoService.getTodos(userId);
         req.setAttribute("todos", todos);
