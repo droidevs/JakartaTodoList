@@ -11,15 +11,17 @@ import Exceptions.ArgumentRequiredException;
 import Exceptions.InvalidDueDateException;
 import Exceptions.ResourceAccessDeniedException;
 import Exceptions.ResourceNotFoundException;
+import Exceptions.TodoValidationException;
 import Models.CreateTodoRequest;
 import Models.DeleteTodoRequest;
 import Models.GetTodoRequest;
 import Models.UpdateTodoRequest;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
-import jakarta.servlet.http.HttpServletResponse;
+import static Validators.TodoBusinessValidator.validateDueDate;
+import static Validators.TodoBusinessValidator.validateStatusTransition;
+import Validators.TodoValidator;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,7 +60,7 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public Todo createTodo(CreateTodoRequest request, Integer sessionUser) throws InvalidDueDateException, ArgumentRequiredException {
+    public Todo createTodo(CreateTodoRequest request, Integer sessionUser) throws InvalidDueDateException, ArgumentRequiredException, TodoValidationException {
         Todo todo = new Todo();
         
         validateDueDate(request.getDueDate());
@@ -68,11 +70,14 @@ public class TodoService {
         todo.setStatus(request.getStatus());
         todo.setDueDate(request.getDueDate());
         todo.setUserId(sessionUser);
+        
+        TodoValidator.validate(todo);
+        
         todoRepository.save(todo);
         return todo;
     }
 
-    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ActionDeniedException, InvalidDueDateException, ArgumentRequiredException {
+    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ActionDeniedException, InvalidDueDateException, ArgumentRequiredException, TodoValidationException {
         Integer id = request.getId();
         var todoUser = todoRepository.getUserIdForTodo(id);
         if (!Objects.equals(todoUser, sessionUser)) {
@@ -96,6 +101,9 @@ public class TodoService {
         if(todo.getStatus() != TodoStatus.OVERDUE) {
             todo.setDueDate(request.getDueDate());
         }
+        
+        TodoValidator.validate(todo);
+
         todoRepository.save(todo);
         return todo;
     }
@@ -139,42 +147,7 @@ public class TodoService {
         }
     }
     
-    private void validateDueDate(LocalDate dueDate) throws InvalidDueDateException, ArgumentRequiredException{
-        if(dueDate == null) {
-            throw new ArgumentRequiredException();
-        }
-        
-        if (dueDate.isBefore(LocalDate.now())) {
-            throw new InvalidDueDateException();
-        }
-    }
-    
-    private void validateStatusTransition(TodoStatus oldStatus, TodoStatus newStatus, LocalDate oldDueDate) throws ActionDeniedException {
-        
-        if (oldStatus == TodoStatus.COMPLETED && oldStatus != newStatus) {
-            throw new ActionDeniedException();
-        }
-        
-        // Cannot go back to new
-        if (newStatus == TodoStatus.NEW && oldStatus != TodoStatus.NEW) {
-            throw new ActionDeniedException();
-        }
-        
-        if (oldStatus == TodoStatus.COMPLETED && newStatus == TodoStatus.IN_PROGRESS) {
-            throw new ActionDeniedException();
-        }
-        
-        if (oldStatus == TodoStatus.OVERDUE && newStatus == TodoStatus.COMPLETED) {
-            if (oldDueDate == null || ChronoUnit.DAYS.between(oldDueDate, LocalDate.now()) < 3) {
-                throw new ActionDeniedException();
-            }
-        }
-        
-        if (oldStatus == TodoStatus.OVERDUE &&
-            newStatus == TodoStatus.NEW || newStatus == TodoStatus.IN_PROGRESS) {
-            throw new ActionDeniedException();
-        }
-    }
+   
     
     public void markOverdueTodos() {
         todoRepository.markOverdueTodos();

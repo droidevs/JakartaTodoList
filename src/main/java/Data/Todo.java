@@ -5,6 +5,10 @@
 package Data;
 
 import Constants.TodoStatus;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
@@ -14,10 +18,21 @@ import java.time.LocalDate;
 public class Todo {
     
     private Integer id;
+    
+    @NotBlank(message = "Title is required")
+    @Size(min = 3, max = 100, message = "Title must be between 3 and 100 chars")
     private String title;
+    
+    @Size(max = 500, message = "Description too long")
     private String description;
+    
     private Integer userId;
+    
+    @NotNull(message = "Status is required")
     private TodoStatus status;
+    
+    @NotNull(message = "Due date is required")
+    @FutureOrPresent(message = "Due date must be today or in the future")
     private LocalDate dueDate;
 
     public Todo() {

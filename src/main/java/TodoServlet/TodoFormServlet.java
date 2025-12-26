@@ -9,6 +9,7 @@ import Data.Todo;
 import Exceptions.ArgumentRequiredException;
 import Exceptions.InvalidDueDateException;
 import Exceptions.ResourceNotFoundException;
+import Exceptions.TodoValidationException;
 import Models.CreateTodoRequest;
 import Models.GetTodoRequest;
 import Models.UpdateTodoRequest;
@@ -116,29 +117,39 @@ public class TodoFormServlet extends HttpServlet {
             return;
         }
         var sessionUser = (Integer) request.getSession().getAttribute("userId");
-        Integer id;
+        Integer id = null;
 
         try {
             id = Integer.valueOf(request.getParameter("id"));
             var updateRequest = new UpdateTodoRequest(id, title, description, dueDate, TodoStatus.valueOf(status));
             todoService.updateTodo(updateRequest, sessionUser);
         } catch (NumberFormatException e) {
-            var createRequest = new CreateTodoRequest(title, description, TodoStatus.NEW, dueDate);
-            try {
-                todoService.createTodo(createRequest, sessionUser);
-            } catch (Exception ex) {
-                request.setAttribute("error", e.getMessage());
-                request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
-                return;
-            }
+            id = -1;
+        } catch (TodoValidationException e) {
+            request.setAttribute("errors", e.getViolations());
+            request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("error", e.getMessage());
             request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
             return;
         }
 
-        response.sendRedirect(request.getContextPath() + "/todos");
+        if (id == -1) {
+            var createRequest = new CreateTodoRequest(title, description, TodoStatus.NEW, dueDate);
+            try {
+                todoService.createTodo(createRequest, sessionUser);
+            } catch (TodoValidationException e) {
+                request.setAttribute("errors", e.getViolations());
+                request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
+            } catch (Exception e) {
+                request.setAttribute("error", e.getMessage());
+                request.getRequestDispatcher("/TodoForm.jsp").forward(request, response);
+                return;
+            }
+
+            response.sendRedirect(request.getContextPath() + "/todos");
+
+        }
 
     }
-
 }
