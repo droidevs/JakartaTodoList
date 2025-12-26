@@ -175,4 +175,8 @@ public class TodoService {
             throw new ActionDeniedException();
         }
     }
+    
+    public void markOverdueTodos() {
+        todoRepository.markOverdueTodos();
+    }
 }

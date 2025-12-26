@@ -47,4 +47,6 @@ public interface TodoRepository {
     void delete(int id);
     
     Integer getUserIdForTodo(Integer todoId);
+    
+    void markOverdueTodos();
 }

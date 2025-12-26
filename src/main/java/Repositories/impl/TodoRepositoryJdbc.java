@@ -150,5 +150,23 @@ public class TodoRepositoryJdbc implements TodoRepository {
     public Integer getUserIdForTodo(Integer todoId) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    @Override
+    public void markOverdueTodos() {
+        String MARK_OVERDUE_SQL =
+        "UPDATE todos " +
+        "SET status = 'OVERDUE' " +
+        "WHERE due_date < CURDATE() " +
+        "AND status NOT IN ('COMPLETED', 'OVERDUE')";
+        
+        try (Connection con = Database.getConnection();
+             PreparedStatement ps = con.prepareStatement(MARK_OVERDUE_SQL)) {
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to mark overdue todos", e);
+        }
+    }
     
 }
