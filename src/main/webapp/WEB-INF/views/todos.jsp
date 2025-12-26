@@ -4,6 +4,7 @@
     Author     : Mouad OUMOUS
 --%>
 
+<%@page import="View.ViewResolver"%>
 <%@page import="Constants.TodoStatus"%>
 <%@page import="Data.Todo"%>
 <%@ page import="java.util.*" %>
