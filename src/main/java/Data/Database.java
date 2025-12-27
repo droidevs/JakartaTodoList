@@ -9,9 +9,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- *
+ * @deprecated in favor of HibernetUtil
  * @author Mouad OUMOUS
  */
+@Deprecated
 public class Database {
     
     private static final String URL = "jdbc:mysql://localhost:3306/db_todo_list?zeroDateTimeBehavior=CONVERT_TO_NULL";

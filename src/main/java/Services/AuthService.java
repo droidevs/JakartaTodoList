@@ -1,9 +1,13 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
 package Services;
 
+/**
+ *
+ * @author admin
+ */
 import Data.User;
 import Exceptions.IncorrectPasswordException;
 import Exceptions.PasswordNotConfirmedException;
@@ -11,66 +15,29 @@ import Exceptions.UserAlreadyExistsException;
 import Exceptions.UserNotFoundException;
 import Models.LoginRequest;
 import Models.RegisterRequest;
-import Repositories.UserRepository;
-import Repositories.impl.UserRepositoryJdbc;
-import Utils.PasswordUtil;
 
-/**
- *
- * @author Mouad OUMOUS
- */
-public class AuthService {
-    
-    private final UserRepository userRepository;
+public interface AuthService {
 
-    public AuthService() {
-        this.userRepository = new UserRepositoryJdbc();
-    }
-    
-    public User login(LoginRequest request) throws UserNotFoundException, IncorrectPasswordException {
-        String username = request.getUsername();
-        String password = request.getPassword();
-        
-        User user = userRepository.findByUsername(username);
+    /**
+     * Authenticate a user using username and password.
+     *
+     * @param request login data
+     * @return authenticated User
+     * @throws UserNotFoundException if username does not exist
+     * @throws IncorrectPasswordException if password is invalid
+     */
+    User login(LoginRequest request)
+            throws UserNotFoundException, IncorrectPasswordException;
 
-        if (user != null) {
-            String hashedPassword = user.getPasswordHash();
-            if (PasswordUtil.verifyPassword(password, hashedPassword)) {
-                // Password correct
-                return user;
-            } else {
-                throw new IncorrectPasswordException();
-            }
-        } else {
-            // invalid credentals
-            throw new UserNotFoundException();
-        }
-       
-    }
-    
-    public User register(RegisterRequest request) throws UserAlreadyExistsException, PasswordNotConfirmedException {
-        String username = request.getUsername();
-        String fullName = request.getFullName();
-        String password = request.getPassword();
-        String confirmPassowrd = request.getConfirmPassword();
-        
-        if(userRepository.findByUsername(username) != null) {
-            throw new UserAlreadyExistsException();
-        }
-        
-        if (password == null ? confirmPassowrd != null : !password.equals(confirmPassowrd)) {
-            throw new PasswordNotConfirmedException();
-        }
-        
-        String hashedPassword = PasswordUtil.hashPassword(password);
-
-        User user = new User();
-        user.setUsername(username);
-        user.setFullName(fullName);
-        user.setPasswordHash(hashedPassword);
-
-        userRepository.save(user);
-        return user;
-    }
-    
+    /**
+     * Register a new user.
+     *
+     * @param request registration data
+     * @return created User
+     * @throws UserAlreadyExistsException if username already exists
+     * @throws PasswordNotConfirmedException if passwords do not match
+     */
+    User register(RegisterRequest request)
+            throws UserAlreadyExistsException, PasswordNotConfirmedException;
 }
+

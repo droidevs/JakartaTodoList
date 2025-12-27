@@ -6,32 +6,21 @@ package TodoServlet;
 
 import Constants.TodoStatus;
 import Data.Todo;
-import Errors.BusinessErrorMapper;
-import Exceptions.ArgumentRequiredException;
-import Exceptions.InvalidDueDateException;
-import Exceptions.ResourceNotFoundException;
-import Exceptions.TodoValidationException;
 import Models.CreateTodoRequest;
 import Models.GetTodoRequest;
 import Models.UpdateTodoRequest;
-import Repositories.TodoRepository;
-import Repositories.impl.TodoRepositoryJdbc;
 import Services.TodoService;
+import Services.impl.TodoServiceImpl2;
 import Utils.ExceptionHandlerUtil;
 import View.ViewDispatcher;
 import View.ViewResolver;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  *
@@ -43,7 +32,9 @@ public class TodoFormServlet extends HttpServlet {
     private final TodoService todoService;
 
     public TodoFormServlet() {
-        this.todoService = new TodoService();
+        //this.todoService = new TodoServiceImpl();
+        this.todoService = new TodoServiceImpl2();
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

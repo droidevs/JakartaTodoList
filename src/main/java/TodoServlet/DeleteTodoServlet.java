@@ -9,6 +9,8 @@ import Models.DeleteTodoRequest;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
 import Services.TodoService;
+import Services.impl.TodoServiceImpl;
+import Services.impl.TodoServiceImpl2;
 import Utils.ExceptionHandlerUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,7 +32,7 @@ public class DeleteTodoServlet extends HttpServlet {
     private final TodoService todoService;
 
     public DeleteTodoServlet() {
-        this.todoService = new TodoService();
+        this.todoService = new TodoServiceImpl2();
     }
     
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

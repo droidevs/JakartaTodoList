@@ -6,7 +6,7 @@ package TodoServlet;
 
 import Data.User;
 import Models.RegisterRequest;
-import Services.AuthService;
+import Services.impl.AuthServiceImpl;
 import View.ViewDispatcher;
 import View.ViewResolver;
 import java.io.IOException;
@@ -24,10 +24,10 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/signup")
 public class SignupServlet extends HttpServlet {
 
-    private final AuthService authService;
+    private final AuthServiceImpl authService;
 
     public SignupServlet() {
-        this.authService = new AuthService();
+        this.authService = new AuthServiceImpl();
     }
 
     @Override

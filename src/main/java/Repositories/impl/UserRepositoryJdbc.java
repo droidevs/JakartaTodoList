@@ -13,9 +13,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 /**
- *
+ * @deprecated 
  * @author Mouad OUMOUS
  */
+@Deprecated
 public class UserRepositoryJdbc implements UserRepository {
     
     private static UserRepository INSTANCE = null;

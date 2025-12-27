@@ -4,6 +4,10 @@
  */
 package Data;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Mouad OUMOUS
@@ -14,10 +18,14 @@ public class User {
     
     private String username;
     
+    
     private String fullName;
     
     private String passwordHash;
 
+    
+    private List<Todo> todos = new ArrayList<>();
+    
     public int getId() {
         return id;
     }

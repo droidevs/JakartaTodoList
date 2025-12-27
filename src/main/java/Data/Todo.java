@@ -5,35 +5,39 @@
 package Data;
 
 import Constants.TodoStatus;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 
 /**
  *
  * @author Mouad OUMOUS
  */
+
+
 public class Todo {
+    
     
     private Integer id;
     
-    @NotBlank(message = "Title is required")
-    @Size(min = 3, max = 100, message = "Title must be between 3 and 100 chars")
+    
     private String title;
     
-    @Size(max = 500, message = "Description too long")
+    
     private String description;
     
-    private Integer userId;
     
-    @NotNull(message = "Status is required")
-    private TodoStatus status;
     
-    @NotNull(message = "Due date is required")
-    @FutureOrPresent(message = "Due date must be today or in the future")
+    private User user;
+    
+    @Deprecated
+    private Integer user_id;
+    
+    private String status;
+    
+    
     private LocalDate dueDate;
+    
+    
 
     public Todo() {
         id = -1;
@@ -46,6 +50,15 @@ public class Todo {
         this.title = title;
         this.description = description;
     }
+    
+    /*
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = TodoStatus.NEW;
+        }
+    }*/
 
     public Integer getId() {
         return id;
@@ -59,12 +72,22 @@ public class Todo {
         return description;
     }
 
+    public User getUser() {
+        return user;
+    }
+    
+    @Deprecated
     public Integer getUserId() {
-        return userId;
+        return user_id;
+    }
+    
+    @Deprecated
+    public void setUserId(Integer id) {
+        user_id = id;
     }
 
     public TodoStatus getStatus() {
-        return status;
+        return TodoStatus.valueOf(status);
     }
 
     public LocalDate getDueDate() {
@@ -85,17 +108,18 @@ public class Todo {
         this.description = description;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
     public void setStatus(TodoStatus status) {
-        this.status = status;
+        this.status = status.name();
     }
 
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
     
    
     public Boolean isEmpty() {

@@ -1,0 +1,24 @@
+
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="Data">
+    <class name="User" table="users">
+        <id name="id" column="id">
+            <generator class="identity" />
+        </id>
+        
+        <property name="username" column="username" not-null="true" unique="true" />
+        <property name="fullName" column="fullname" no-null="true"/>
+        <property name="passwordHash" column="password_hash" not-null="true" />
+        
+        <list name="todos" cascade="all" inverse="true">
+            <key column="user_id"/>
+            <one-to-many class="Todo" />
+        </list>
+    </class>
+</hibernate-mapping>
+
+

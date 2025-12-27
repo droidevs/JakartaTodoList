@@ -5,6 +5,7 @@
 package TodoServlet;
 import Data.Todo;
 import Services.TodoService;
+import Services.impl.TodoServiceImpl2;
 import View.ViewDispatcher;
 import View.ViewResolver;
 import jakarta.servlet.ServletException;
@@ -20,10 +21,12 @@ import java.util.List;
 @WebServlet("/todos")
 public class TodoServlet extends HttpServlet {
 
+    //private final TodoServiceImpl todoService;
     private final TodoService todoService;
 
     public TodoServlet() {
-        this.todoService = new TodoService();
+        //this.todoService = new TodoServiceImpl();
+        this.todoService = new TodoServiceImpl2();
     }
     
     @Override

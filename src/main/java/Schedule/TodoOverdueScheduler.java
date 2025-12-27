@@ -5,6 +5,8 @@
 package Schedule;
 
 import Services.TodoService;
+import Services.impl.TodoServiceImpl;
+import Services.impl.TodoServiceImpl2;
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
@@ -18,7 +20,7 @@ import jakarta.ejb.Startup;
 @Startup
 public class TodoOverdueScheduler {
     
-    private final TodoService todoService = new TodoService();
+    private final TodoService todoService = new TodoServiceImpl2();
     
     @Schedule(hour = "0", minute = "0", second = "0", persistent= false)
     public void markOverdueTodos() {

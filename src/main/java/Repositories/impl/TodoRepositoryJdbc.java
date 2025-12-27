@@ -22,6 +22,7 @@ import java.util.List;
  *
  * @author Mouad OUMOUS
  */
+@Deprecated
 public class TodoRepositoryJdbc implements TodoRepository {
 
     private static TodoRepository INSTANCE = null;

@@ -1,8 +1,11 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
 package Services;
+
+
+
 
 import Constants.TodoStatus;
 import Data.Todo;
@@ -16,140 +19,73 @@ import Models.CreateTodoRequest;
 import Models.DeleteTodoRequest;
 import Models.GetTodoRequest;
 import Models.UpdateTodoRequest;
-import Repositories.TodoRepository;
-import Repositories.impl.TodoRepositoryJdbc;
-import static Validators.TodoBusinessValidator.validateDueDate;
-import static Validators.TodoBusinessValidator.validateStatusTransition;
-import Validators.TodoValidator;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 /**
  *
  * @author admin
  */
-public class TodoService {
 
-    private final TodoRepository todoRepository;
 
-    public TodoService() {
-        this.todoRepository = new TodoRepositoryJdbc();
-    }
+public interface TodoService {
 
-    public List<Todo> getTodos(Integer userId) {
-        return todoRepository.findByUserId(userId);
-    }
+    /* =========================
+       READ
+       ========================= */
 
-    public Todo getTodo(GetTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ResourceNotFoundException {
-        Integer id = request.getId();
-        var todoUser = todoRepository.getUserIdForTodo(id);
-        if (!Objects.equals(todoUser, sessionUser)) {
-            throw new ResourceAccessDeniedException();
-        }
+    List<Todo> getTodos(Integer userId);
 
-        Todo todo = todoRepository.findById(id);
+    Todo getTodo(GetTodoRequest request, Integer sessionUserId)
+            throws ResourceAccessDeniedException,
+                   ResourceNotFoundException;
 
-        if (todo == null) {
-            throw new ResourceNotFoundException();
-        }
-        return todo;
-    }
+    /* =========================
+       CREATE
+       ========================= */
 
-    public TodoService(TodoRepository todoRepository) {
-        this.todoRepository = todoRepository;
-    }
+    Todo createTodo(CreateTodoRequest request, Integer sessionUserId)
+            throws InvalidDueDateException,
+                   ArgumentRequiredException,
+                   TodoValidationException,
+                   ResourceAccessDeniedException;
 
-    public Todo createTodo(CreateTodoRequest request, Integer sessionUser) throws InvalidDueDateException, ArgumentRequiredException, TodoValidationException {
-        Todo todo = new Todo();
-        
-        validateDueDate(request.getDueDate());
-        
-        todo.setTitle(request.getTitle());
-        todo.setDescription(request.getDescription());
-        todo.setStatus(request.getStatus());
-        todo.setDueDate(request.getDueDate());
-        todo.setUserId(sessionUser);
-        
-        TodoValidator.validate(todo);
-        
-        todoRepository.save(todo);
-        return todo;
-    }
+    /* =========================
+       UPDATE
+       ========================= */
 
-    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ActionDeniedException, InvalidDueDateException, ArgumentRequiredException, TodoValidationException {
-        Integer id = request.getId();
-        var todoUser = todoRepository.getUserIdForTodo(id);
-        if (!Objects.equals(todoUser, sessionUser)) {
-            throw new ResourceAccessDeniedException();
-        }
+    Todo updateTodo(UpdateTodoRequest request, Integer sessionUserId)
+            throws ResourceAccessDeniedException,
+                   ActionDeniedException,
+                   InvalidDueDateException,
+                   ArgumentRequiredException,
+                   TodoValidationException,
+                   ResourceNotFoundException;
 
-        var todo = todoRepository.findById(request.getId());
-        
-        if(todo.getStatus() == TodoStatus.OVERDUE &&
-                    !Objects.equals(todo.getDueDate(), request.getDueDate())) {
-            throw new ActionDeniedException();
-        }
-        
-        validateStatusTransition(todo.getStatus(), request.getStatus(), request.getDueDate());
-        
-        validateDueDate(request.getDueDate());
-        
-        todo.setTitle(request.getTitle());
-        todo.setDescription(request.getDescription());
-        
-        if(todo.getStatus() != TodoStatus.OVERDUE) {
-            todo.setDueDate(request.getDueDate());
-        }
-        
-        TodoValidator.validate(todo);
+    /* =========================
+       DELETE
+       ========================= */
 
-        todoRepository.save(todo);
-        return todo;
-    }
+    void deleteTodo(DeleteTodoRequest request, Integer sessionUserId)
+            throws ActionDeniedException;
 
-    public void deleteTodo(DeleteTodoRequest request, Integer sessionUser) throws ActionDeniedException {
-        var todoUser = todoRepository.getUserIdForTodo(request.getId());
-        if (!Objects.equals(todoUser, sessionUser)) {
-            throw new ActionDeniedException();
-        }
-    }
+    /* =========================
+       STATUS
+       ========================= */
 
-    public void updateTodoStatus(int todoId, int userId, TodoStatus status) throws ActionDeniedException, ResourceNotFoundException {
-        Todo todo;
-        try {
-            todo = getTodo(new GetTodoRequest(todoId), userId);
-            
-            validateStatusTransition(todo.getStatus(), status, todo.getDueDate());
-            
-            todo.setStatus(status);
-            todoRepository.update(todo);
-        } catch (ResourceAccessDeniedException ex) {
-            throw new ActionDeniedException();
-        }
-    }
+    void updateTodoStatus(Integer todoId, Integer userId, TodoStatus status)
+            throws ActionDeniedException,
+                   ResourceNotFoundException;
+
+    /* =========================
+       AUTO / SCHEDULED
+       ========================= */
 
     /**
-     * auto function
      *
      * @param userId
      */
-    public void markOverdueTodos(int userId) {
-        List<Todo> todos = getTodos(userId);
-        LocalDate today = LocalDate.now();
-        for (Todo t : todos) {
-            if (t.getDueDate() != null
-                    && t.getStatus() != TodoStatus.COMPLETED
-                    && t.getDueDate().isBefore(today)) {
-                t.setStatus(TodoStatus.OVERDUE);
-                todoRepository.update(t);
-            }
-        }
-    }
-    
-   
-    
-    public void markOverdueTodos() {
-        todoRepository.markOverdueTodos();
-    }
+    void markOverdueTodos(Integer userId);
+
+    void markOverdueTodos();
 }
+

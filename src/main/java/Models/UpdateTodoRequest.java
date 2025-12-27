@@ -5,6 +5,10 @@
 package Models;
 
 import Constants.TodoStatus;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
@@ -14,9 +18,19 @@ import java.time.LocalDate;
 public class UpdateTodoRequest {
     
     Integer id;
+    
+    @NotBlank(message = "Title is required")
+    @Size(min = 3, max = 100, message = "Title must be between 3 and 100 chars")
     String title;
+    
+    @Size(max = 500, message = "Description too long")
     String description;
+    
+    @NotNull(message = "Due date is required")
+    @FutureOrPresent(message = "Due date must be today or in the future")
     LocalDate dueDate;
+    
+    @NotNull(message = "Status is required")
     TodoStatus status;
 
     public UpdateTodoRequest() {

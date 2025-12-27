@@ -9,7 +9,7 @@ import Data.User;
 import Models.LoginRequest;
 import Repositories.UserRepository;
 import Repositories.impl.UserRepositoryJdbc;
-import Services.AuthService;
+import Services.impl.AuthServiceImpl;
 import Utils.ExceptionHandlerUtil;
 import Utils.PasswordUtil;
 import View.ViewResolver;
@@ -33,10 +33,10 @@ import java.sql.SQLException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    private final AuthService service;
+    private final AuthServiceImpl service;
 
     public LoginServlet() {
-        service = new AuthService();
+        service = new AuthServiceImpl();
     }
     
     @Override

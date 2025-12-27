@@ -6,6 +6,7 @@ package TodoServlet;
 
 import Models.GetTodoRequest;
 import Services.TodoService;
+import Services.impl.TodoServiceImpl2;
 import Utils.ExceptionHandlerUtil;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -13,8 +14,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Objects;
-
 /**
  *
  * @author Mouad OUMOUS
@@ -25,7 +24,8 @@ public class ViewTodoServlet extends HttpServlet {
     private final TodoService todoService;
 
     public ViewTodoServlet() {
-        this.todoService = new TodoService();
+        //this.todoService = new TodoServiceImpl();
+        this.todoService = new TodoServiceImpl2();
     }
     
 
