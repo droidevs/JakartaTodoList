@@ -13,6 +13,9 @@ import Exceptions.InvalidDueDateException;
 import Exceptions.ResourceAccessDeniedException;
 import Exceptions.ResourceNotFoundException;
 import Exceptions.TodoValidationException;
+import Exceptions.ValidationException;
+import Mappers.TodoMapper;
+import Mappers.impl.TodoMapperImpl;
 import Models.CreateTodoRequest;
 import Models.DeleteTodoRequest;
 import Models.GetTodoRequest;
@@ -22,6 +25,7 @@ import Repositories.UserRepository;
 import Repositories.impl.TodoRepositoryHibernete;
 import Repositories.impl.UserRepositoryHibernete;
 import Services.TodoService;
+import Validators.RequestValidator;
 import static Validators.TodoBusinessValidator.validateDueDate;
 import static Validators.TodoBusinessValidator.validateStatusTransition;
 import Validators.TodoValidator;
@@ -37,10 +41,12 @@ public class TodoServiceImpl2 implements TodoService {
     
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
+    private final TodoMapper todoMapper;
 
     public TodoServiceImpl2() {
         this.todoRepository = new TodoRepositoryHibernete();
         this.userRepository = new UserRepositoryHibernete();
+        this.todoMapper = new TodoMapperImpl();
     }
 
     
@@ -49,6 +55,7 @@ public class TodoServiceImpl2 implements TodoService {
         return todoRepository.findByUserId(userId);
     }
 
+    @Override
     public Todo getTodo(GetTodoRequest request, Integer sessionUserId)
             throws ResourceAccessDeniedException, ResourceNotFoundException {
 
@@ -70,9 +77,12 @@ public class TodoServiceImpl2 implements TodoService {
     public Todo createTodo(CreateTodoRequest request, Integer sessionUserId)
             throws InvalidDueDateException,
                    ArgumentRequiredException,
-                   TodoValidationException,
+                   //TodoValidationException,
+                   ValidationException,
                    ResourceAccessDeniedException {
 
+        RequestValidator.validate(request);
+        
         validateDueDate(request.getDueDate());
 
         User user = userRepository.findById(sessionUserId);
@@ -80,14 +90,9 @@ public class TodoServiceImpl2 implements TodoService {
             throw new ResourceAccessDeniedException();
         }
 
-        Todo todo = new Todo();
-        todo.setTitle(request.getTitle());
-        todo.setDescription(request.getDescription());
-        todo.setStatus(request.getStatus());
-        todo.setDueDate(request.getDueDate());
-        todo.setUser(user);
+        Todo todo = todoMapper.toEntity(request, user);
 
-        TodoValidator.validate(todo);
+        //TodoValidator.validate(todo);
 
         todoRepository.save(todo);
         return todo;
@@ -100,9 +105,12 @@ public class TodoServiceImpl2 implements TodoService {
                    ActionDeniedException,
                    InvalidDueDateException,
                    ArgumentRequiredException,
-                   TodoValidationException,
+                   //TodoValidationException,
+                   ValidationException,
                    ResourceNotFoundException {
 
+        RequestValidator.validate(request);
+        
         Todo todo = todoRepository.findById(request.getId());
 
         if (todo == null) {
@@ -126,16 +134,15 @@ public class TodoServiceImpl2 implements TodoService {
 
         validateDueDate(request.getDueDate());
 
-        todo.setTitle(request.getTitle());
-        todo.setDescription(request.getDescription());
-
-        if (todo.getStatus() != TodoStatus.OVERDUE) {
-            todo.setDueDate(request.getDueDate());
+        if (todo.getStatus() == TodoStatus.OVERDUE) {
+            request.setDueDate(null);
         }
+        
+        todoMapper.updateEntity(todo, request);
 
         todo.setStatus(request.getStatus());
 
-        TodoValidator.validate(todo);
+        //TodoValidator.validate(todo);
 
         todoRepository.update(todo);
         return todo;
@@ -198,4 +205,5 @@ public class TodoServiceImpl2 implements TodoService {
     public void markOverdueTodos() {
         todoRepository.markOverdueTodos();
     }
+
 }

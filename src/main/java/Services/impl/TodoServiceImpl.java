@@ -11,7 +11,8 @@ import Exceptions.ArgumentRequiredException;
 import Exceptions.InvalidDueDateException;
 import Exceptions.ResourceAccessDeniedException;
 import Exceptions.ResourceNotFoundException;
-import Exceptions.TodoValidationException;
+//import Exceptions.TodoValidationException;
+import Exceptions.ValidationException;
 import Models.CreateTodoRequest;
 import Models.DeleteTodoRequest;
 import Models.GetTodoRequest;
@@ -19,9 +20,10 @@ import Models.UpdateTodoRequest;
 import Repositories.TodoRepository;
 import Repositories.impl.TodoRepositoryJdbc;
 import Services.TodoService;
+import Validators.RequestValidator;
 import static Validators.TodoBusinessValidator.validateDueDate;
 import static Validators.TodoBusinessValidator.validateStatusTransition;
-import Validators.TodoValidator;
+//import Validators.TodoValidator;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -61,8 +63,10 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Todo createTodo(CreateTodoRequest request, Integer sessionUser) throws InvalidDueDateException, ArgumentRequiredException, TodoValidationException {
+    public Todo createTodo(CreateTodoRequest request, Integer sessionUser) throws InvalidDueDateException, ArgumentRequiredException,ValidationException /*TodoValidationException*/ {
         Todo todo = new Todo();
+        
+        RequestValidator.validate(request);
         
         validateDueDate(request.getDueDate());
         
@@ -72,15 +76,18 @@ public class TodoServiceImpl implements TodoService {
         todo.setDueDate(request.getDueDate());
         todo.setUserId(sessionUser);
         
-        TodoValidator.validate(todo); // validation are not in todo anymore
+        //TodoValidator.validate(todo); // validation are not in todo anymore
         
         todoRepository.save(todo);
         return todo;
     }
 
     @Override
-    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ActionDeniedException, InvalidDueDateException, ArgumentRequiredException, TodoValidationException {
+    public Todo updateTodo(UpdateTodoRequest request, Integer sessionUser) throws ResourceAccessDeniedException, ActionDeniedException, InvalidDueDateException, ArgumentRequiredException, ValidationException /*TodoValidationException*/ {
         Integer id = request.getId();
+        
+        RequestValidator.validate(request);
+        
         var todoUser = todoRepository.getUserIdForTodo(id);
         if (!Objects.equals(todoUser, sessionUser)) {
             throw new ResourceAccessDeniedException();
@@ -104,7 +111,7 @@ public class TodoServiceImpl implements TodoService {
             todo.setDueDate(request.getDueDate());
         }
         
-        TodoValidator.validate(todo);
+        //TodoValidator.validate(todo);
 
         todoRepository.save(todo);
         return todo;

@@ -4,34 +4,42 @@
  */
 package Validators;
 
-import Data.Todo;
-import Exceptions.TodoValidationException;
-import jakarta.validation.ConstraintValidator;
+
+import Exceptions.ValidationException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+
 import java.util.Set;
 
 /**
  *
  * @author admin
  */
-@Deprecated
-public class TodoValidator {
-    
+public final class RequestValidator {
+
     private static final Validator validator;
-    
+
     static {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
-    
-    public static void validate(Todo todo) throws TodoValidationException {
-        Set<ConstraintViolation<Todo>> violations = validator.validate(todo);
-        
+
+    private RequestValidator() {
+        // prevent instantiation
+    }
+
+    public static <T> void validate(T request) throws ValidationException{
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
+
+        Set<ConstraintViolation<T>> violations = validator.validate(request);
+
         if (!violations.isEmpty()) {
-            throw new TodoValidationException(violations);
+            throw new ValidationException(violations);
         }
     }
 }
+

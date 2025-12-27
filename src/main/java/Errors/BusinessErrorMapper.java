@@ -14,6 +14,7 @@ import Exceptions.ResourceNotFoundException;
 import Exceptions.TodoValidationException;
 import Exceptions.UserAlreadyExistsException;
 import Exceptions.UserNotFoundException;
+import Exceptions.ValidationException;
 import Validators.ValidationUtils;
 
 /**
@@ -32,7 +33,7 @@ public class BusinessErrorMapper {
     public static BusinessError map(Exception e) {
 
         // Validation errors
-        if (e instanceof TodoValidationException || e instanceof ArgumentRequiredException || e instanceof InvalidDueDateException) {
+        if (e instanceof /*TodoValidationException*/ ValidationException || e instanceof ArgumentRequiredException || e instanceof InvalidDueDateException) {
             return new BusinessError(400, e.getMessage());
         }
 

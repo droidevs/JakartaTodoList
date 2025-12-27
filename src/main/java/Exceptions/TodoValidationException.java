@@ -12,6 +12,7 @@ import java.util.Set;
  *
  * @author admin
  */
+@Deprecated
 public class TodoValidationException extends Exception {
     
     

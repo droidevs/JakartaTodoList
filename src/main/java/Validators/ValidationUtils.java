@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public class ValidationUtils {
 
-    public static <T> String toMessageString(Set<ConstraintViolation<T>> violations) {
+    public static String toMessageString(Set<ConstraintViolation<?>> violations) {
         if (violations == null || violations.isEmpty()) {
             return "";
         }
@@ -25,7 +25,7 @@ public class ValidationUtils {
                 .collect(Collectors.joining(", "));
     }
 
-    public static <T> List<String> toMessageList(Set<ConstraintViolation<T>> violations) {
+    public static <T> List<String> toMessageList(Set<ConstraintViolation<?>> violations) {
         if (violations == null) {
             return List.of();
         }

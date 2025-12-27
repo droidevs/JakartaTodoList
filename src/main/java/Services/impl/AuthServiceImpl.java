@@ -13,14 +13,15 @@ import Models.LoginRequest;
 import Models.RegisterRequest;
 import Repositories.UserRepository;
 import Repositories.impl.UserRepositoryHibernete;
-import Repositories.impl.UserRepositoryJdbc;
+//import Repositories.impl.UserRepositoryJdbc;
+import Services.AuthService;
 import Utils.PasswordUtil;
 
 /**
  *
  * @author Mouad OUMOUS
  */
-public class AuthServiceImpl {
+public class AuthServiceImpl implements AuthService {
     
     private final UserRepository userRepository;
 
@@ -29,6 +30,7 @@ public class AuthServiceImpl {
         this.userRepository = new UserRepositoryHibernete();
     }
     
+    @Override
     public User login(LoginRequest request) throws UserNotFoundException, IncorrectPasswordException {
         String username = request.getUsername();
         String password = request.getPassword();
@@ -50,6 +52,7 @@ public class AuthServiceImpl {
        
     }
     
+    @Override
     public User register(RegisterRequest request) throws UserAlreadyExistsException, PasswordNotConfirmedException {
         String username = request.getUsername();
         String fullName = request.getFullName();

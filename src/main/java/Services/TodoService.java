@@ -15,6 +15,7 @@ import Exceptions.InvalidDueDateException;
 import Exceptions.ResourceAccessDeniedException;
 import Exceptions.ResourceNotFoundException;
 import Exceptions.TodoValidationException;
+import Exceptions.ValidationException;
 import Models.CreateTodoRequest;
 import Models.DeleteTodoRequest;
 import Models.GetTodoRequest;
@@ -46,7 +47,8 @@ public interface TodoService {
     Todo createTodo(CreateTodoRequest request, Integer sessionUserId)
             throws InvalidDueDateException,
                    ArgumentRequiredException,
-                   TodoValidationException,
+                   //TodoValidationException,
+                   ValidationException,
                    ResourceAccessDeniedException;
 
     /* =========================
@@ -58,7 +60,8 @@ public interface TodoService {
                    ActionDeniedException,
                    InvalidDueDateException,
                    ArgumentRequiredException,
-                   TodoValidationException,
+                   //TodoValidationException,
+                   ValidationException,
                    ResourceNotFoundException;
 
     /* =========================
