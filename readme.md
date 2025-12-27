@@ -58,8 +58,8 @@ A simple and robust **Todo List Web Application** built using **Jakarta Servlet*
 1. **Clone the repository**:
 
 ```bash
-git clone https://github.com/yourusername/jakarta-todolist.git
-cd jakarta-todolist
+git clone https://github.com/droidevs/JakartaTodoList.git
+cd jakartaTodolist
 ````
 
 2. **Configure Database**:
