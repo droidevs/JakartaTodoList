@@ -50,11 +50,18 @@ public class DatabaseIntializer implements ServletContextListener {
                     + "ADD COLUMN category_id INT NOT NULL,"
                     + "ADD CONSTRAINT fk_todo_category"
                     + "FOREIGN KEY (category_id) REFERENCES categories(id);";
-            
+
+            String sqlUserCategories = "ALTER TABLE categories\n"
+                    + "ADD COLUMN user_id INT NOT NULL,\n"
+                    + "ADD CONSTRAINT fk_category_user\n"
+                    + "FOREIGN KEY (user_id) REFERENCES users(id),\n"
+                    + "ADD CONSTRAINT uq_user_category_name UNIQUE (user_id, name);";
+
             stmt.executeUpdate(sqlTodosTable);
             stmt.executeUpdate(sqlUsersTable);
             stmt.executeUpdate(sqlCategories);
-            
+            stmt.execute(sqlUserCategories);
+
             System.out.println("Database initialized successfully!");
 
         } catch (SQLException e) {
