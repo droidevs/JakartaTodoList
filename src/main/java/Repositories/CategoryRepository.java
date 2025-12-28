@@ -14,10 +14,14 @@ import java.util.List;
 public interface CategoryRepository {
     
     Category findById(int id);
+    
+    Category findByIdAndUser(int id, int userId);
 
     Category findByName(String name);
 
-    List<Category> findAll();
+    List<Category> findAll(int userId);
+    
+    boolean existsByNameAndUser(String name, int userId);
 
     void save(Category category);
 

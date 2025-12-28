@@ -93,13 +93,21 @@ public class TodoServiceImpl2 implements TodoService {
             throw new ResourceAccessDeniedException();
         }
 
+        /*
         Category category = categoryRepository.findById(request.getCategoryId());
+         */
+        Category category
+                = categoryRepository.findByIdAndUser(
+                        request.getCategoryId(),
+                        sessionUserId
+                );
+        
         if (category == null) {
-            throw new ResourceNotFoundException();
+            throw new ResourceAccessDeniedException();
         }
-        
-        Todo todo = todoMapper.toEntity(request, user);
-        
+
+        Todo todo = todoMapper.toEntity(request, user, category);
+
         //TodoValidator.validate(todo);
         todoRepository.save(todo);
         return todo;

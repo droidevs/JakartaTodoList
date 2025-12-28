@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author admin
  */
-public class ActionDeniedException extends Exception {
+public class ActionDeniedException extends RuntimeException {
 
     public ActionDeniedException() {
         super("You are not allowed to do this action");

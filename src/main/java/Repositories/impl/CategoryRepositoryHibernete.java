@@ -23,31 +23,46 @@ public class CategoryRepositoryHibernete implements CategoryRepository {
     public CategoryRepositoryHibernete() {
         this.sessionFactory = HiberneteUtil.getSessionFactory();
     }
-    
-    
+
     @Override
     public Category findById(int id) {
-        try(Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             return session.get(Category.class, id);
         }
     }
 
     @Override
-    public Category findByName(String name) {
-        try(Session session = sessionFactory.openSession()) {
-            return session.createQuery(
-                "FROM Category c WHERE c.name = :name", Category.class
-            ).setParameter("name", name)
-             .uniqueResult();
+    public Category findByIdAndUser(int id, int userId) {
+        try (Session s = sessionFactory.openSession()) {
+            return s.createQuery(
+                    "FROM Category c\n"
+                    + "WHERE c.id = :id AND c.user.id = :userId",
+                    Category.class
+            )
+                    .setParameter("id", id)
+                    .setParameter("userId", userId)
+                    .uniqueResult();
         }
     }
 
     @Override
-    public List<Category> findAll() {
+    public Category findByName(String name) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(
-                "FROM category", Category.class
-            ).list();
+                    "FROM Category c WHERE c.name = :name", Category.class
+            ).setParameter("name", name)
+                    .uniqueResult();
+        }
+    }
+
+    @Override
+    public List<Category> findAll(int userId) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                    "FROM category WHERE c.user.id = :userId",
+                    Category.class
+            ).setParameter("userId", userId)
+                    .list();
         }
     }
 
@@ -62,7 +77,7 @@ public class CategoryRepositoryHibernete implements CategoryRepository {
 
     @Override
     public void update(Category category) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             session.merge(category);
             tx.commit();
@@ -74,11 +89,26 @@ public class CategoryRepositoryHibernete implements CategoryRepository {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             Category category = session.get(Category.class, id);
-            if(category != null) {
+            if (category != null) {
                 session.remove(category);
             }
             tx.commit();
         }
     }
-    
+
+    @Override
+    public boolean existsByNameAndUser(String name, int userId) {
+        try (Session session = sessionFactory.openSession()) {
+            var d = session.createQuery(
+                    "FROM categories WHERE name = :name AND user_id = :userId",
+                    Boolean.class
+            )
+                    .setParameter("name", name)
+                    .setParameter("userId", userId)
+                    .uniqueResult();
+
+            return d != null;
+        }
+    }
+
 }

@@ -5,6 +5,7 @@
 package Mappers;
 
 import Data.Category;
+import Data.User;
 import Models.CreateCategoryRequest;
 import Models.UpdateCategoryRequest;
 
@@ -12,20 +13,11 @@ import Models.UpdateCategoryRequest;
  *
  * @author admin
  */
-public class CategoryMapper {
+public interface CategoryMapper {
 
-    public static Category toEntity(CreateCategoryRequest request) {
-        Category c = new Category();
-        c.setName(request.getName());
-        c.setColor(request.getColor());
-        c.setDescription(request.getDescription());
-        return c;
-    }
+    Category toEntity(CreateCategoryRequest request, User user);
 
-    public static void updateEntity(Category c, UpdateCategoryRequest request) {
-        c.setName(request.getName());
-        c.setColor(request.getColor());
-        c.setDescription(request.getDescription());
-    }
+    void updateEntity(Category c, UpdateCategoryRequest request);
+    
 }
 

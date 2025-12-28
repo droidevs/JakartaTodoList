@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author admin
  */
-public class ResourceAccessDeniedException extends Exception{
+public class ResourceAccessDeniedException extends RuntimeException{
 
     public ResourceAccessDeniedException() {
         super("You are not allowed to access this resource");

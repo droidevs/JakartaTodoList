@@ -19,14 +19,14 @@ import java.util.List;
  */
 public interface CategoryService {
 
-    Category create(CreateCategoryRequest request)
+    Category create(CreateCategoryRequest request, int userId)
             throws ValidationException, ResourceAlreadyExistsException;
 
-    Category update(UpdateCategoryRequest request)
+    Category update(UpdateCategoryRequest request, int userId)
             throws ValidationException, ResourceNotFoundException;
 
-    List<Category> getAll();
+    List<Category> getAll(int userId);
 
-    void delete(int id) throws ActionDeniedException;
+    void delete(int id, int userId) throws ActionDeniedException;
 }
 
