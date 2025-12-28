@@ -4,6 +4,7 @@
  */
 package Servlets;
 
+import Data.Category;
 import Data.Todo;
 import Exceptions.ArgumentRequiredException;
 import Exceptions.InvalidDueDateException;
@@ -17,9 +18,12 @@ import Paths.BasePaths;
 import Paths.PathParams;
 import Paths.Paths;
 import Paths.Router;
+import Services.CategoryService;
+import Services.CategoryServiceImpl;
 import Services.TodoService;
 import Services.impl.TodoServiceImpl2;
 import Utils.ExceptionHandlerUtil;
+import Utils.SessionUtils;
 import View.ViewDispatcher;
 import View.ViewResolver;
 import jakarta.servlet.ServletException;
@@ -39,11 +43,13 @@ import java.util.List;
 public class TodoServlet extends HttpServlet {
 
     private TodoService todoService;
+    private CategoryService categoryService;
     private Router router;
 
     @Override
     public void init() {
         this.todoService = new TodoServiceImpl2();
+        this.categoryService = new CategoryServiceImpl();
         this.router = new Router();
     }
 
@@ -150,7 +156,13 @@ public class TodoServlet extends HttpServlet {
     private void showCreateForm(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
+        var userId = SessionUtils.getLoggedUserId(req);
+        
+        List<Category> categories = categoryService.getAll(userId);
+        
         req.setAttribute("mode", "create");
+        req.setAttribute("categories", categories);
+        
         ViewDispatcher.dispatch(req, resp, ViewResolver.TODO_FORM);
     }
 
