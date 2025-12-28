@@ -4,7 +4,7 @@
  */
 package TodoServlet;
 
-import Data.Database;
+import Utils.DatabaseUtil;
 import Data.User;
 import Models.LoginRequest;
 import Repositories.UserRepository;

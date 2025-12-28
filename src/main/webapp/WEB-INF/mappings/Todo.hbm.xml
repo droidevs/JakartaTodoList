@@ -15,6 +15,9 @@
         <property name="description" column="description" />
         <property name="status" column="status" />
         <property name="dueDate" column="due_date" />
-        <many-to-one name="user" class="User" column="user_id" not-null="true" />
+        <many-to-one name="user" class="User" column="user_id" not-null="true"/>
+        
+        <many-to-one name="catetegory" class="Category" column="category_id" not-null="true" fetch="select" />
+        
     </class>
 </hibernate-mapping>

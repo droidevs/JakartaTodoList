@@ -5,7 +5,7 @@
 package Repositories.impl;
 
 
-import Data.Database;
+import Utils.DatabaseUtil;
 import Repositories.UserRepository;
 import Data.User;
 import java.sql.Connection;
@@ -32,7 +32,7 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public User findByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
-        try(Connection conn = Database.getConnection()) {
+        try(Connection conn = DatabaseUtil.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
             
             ps.setString(1, username);
@@ -50,7 +50,7 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public User findById(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
-        try(Connection conn = Database.getConnection()) {
+        try(Connection conn = DatabaseUtil.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
             
             ps.setInt(1, id);
@@ -69,7 +69,7 @@ public class UserRepositoryJdbc implements UserRepository {
     public void save(User user) {
         String sql = "INSERT INTO users (username, full_name, password) VALUES (?,?,?)";
         
-        try(Connection conn = Database.getConnection()) {
+        try(Connection conn = DatabaseUtil.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             
             ps.setString(1, user.getUsername());
