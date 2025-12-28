@@ -37,6 +37,12 @@
             <one-to-many class="Todo" />
         </select>
         
+        <many-to-one name="user" 
+                     class="User" 
+                     column="user_id" 
+                     not-null="true" 
+                     fetch="select"/>
+        
     </class>
     
     
