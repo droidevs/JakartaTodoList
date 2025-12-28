@@ -22,45 +22,52 @@ public final class Api {
     public HttpMethod getMethod() { return method; }
 
     // --- AUTH ---
-    public static final Api AUTH_LOGIN       = new Api(Paths.Auth.LOGIN(), HttpMethod.POST);
-    public static final Api AUTH_REGISTER    = new Api(Paths.Auth.REGISTER(), HttpMethod.POST);
-    public static final Api AUTH_LOGOUT      = new Api(Paths.Auth.LOGOUT(), HttpMethod.POST);
+    public static final Api AUTH_LOGIN       = new Api(Paths.Auth.LOGIN(), Route.AUTH_LOGIN.getMethod());
+    public static final Api AUTH_REGISTER    = new Api(Paths.Auth.REGISTER(), Route.AUTH_REGISTER.getMethod());
+    public static final Api AUTH_LOGOUT      = new Api(Paths.Auth.LOGOUT(), Route.AUTH_LOGOUT.getMethod());
 
     // --- USERS ---
-    public static final Api USERS_PROFILE         = new Api(Paths.Users.PROFILE(), HttpMethod.GET);
-    public static final Api USERS_UPDATE_PROFILE  = new Api(Paths.Users.UPDATE_PROFILE(), HttpMethod.POST);
-    public static final Api USERS_DELETE_PROFILE  = new Api(Paths.Users.DELETE_PROFILE(), HttpMethod.POST);
+    public static final Api USERS_PROFILE         = new Api(Paths.Users.PROFILE(), Route.USERS_PROFILE.getMethod());
+    public static final Api USERS_UPDATE_PROFILE  = new Api(Paths.Users.UPDATE_PROFILE(), Route.USERS_UPDATE_PROFILE.getMethod());
+    public static final Api USERS_DELETE_PROFILE  = new Api(Paths.Users.DELETE_PROFILE(), Route.USERS_DELETE_PROFILE.getMethod());
 
     // --- TODOS ---
-    public static final Api TODOS_LIST   = new Api(Paths.Todos.LIST(), HttpMethod.GET);
-    public static final Api TODOS_CREATE = new Api(Paths.Todos.CREATE(), HttpMethod.POST);
+    public static final Api TODOS_LIST   = new Api(Paths.Todos.LIST(), Route.TODOS_LIST.getMethod());
+    public static final Api TODOS_CREATE = new Api(Paths.Todos.CREATE(), Route.TODOS_CREATE.getMethod());
 
+    public static final Api TODOS_CREATE_FORM = new Api(Paths.Todos.CREATE(), Route.TODOS_CREATE_FORM.getMethod());
+    
     public static Api TODOS_GET_ONE(int id) {
-        return new Api(Paths.Todos.GET_ONE(String.valueOf(id)), HttpMethod.GET);
+        return new Api(Paths.Todos.GET_ONE(String.valueOf(id)), Route.TODOS_GET_ONE.getMethod());
     }
 
     public static Api TODOS_UPDATE(int id) {
-        return new Api(Paths.Todos.UPDATE(String.valueOf(id)), HttpMethod.POST);
+        return new Api(Paths.Todos.UPDATE(String.valueOf(id)), Route.TODOS_UPDATE.getMethod());
+    }
+    
+    public static Api TODOS_UPDATE_FORM(int id) {
+        return new Api(Paths.Todos.UPDATE_FORM(String.valueOf(id)), Route.TODOS_EDIT_FORM.getMethod());
     }
 
     public static Api TODOS_DELETE(int id) {
-        return new Api(Paths.Todos.DELETE(String.valueOf(id)), HttpMethod.POST);
+        return new Api(Paths.Todos.DELETE(String.valueOf(id)), Route.TODOS_DELETE.getMethod());
     }
 
     // --- CATEGORIES ---
-    public static final Api CATEGORIES_LIST   = new Api(Paths.Categories.LIST(), HttpMethod.GET);
-    public static final Api CATEGORIES_CREATE = new Api(Paths.Categories.CREATE(), HttpMethod.POST);
+    public static final Api CATEGORIES_LIST   = new Api(Paths.Categories.LIST(), Route.CATEGORIES_LIST.getMethod());
+    public static final Api CATEGORIES_CREATE = new Api(Paths.Categories.CREATE(), Route.CATEGORIES_CREATE.getMethod());
 
     public static Api CATEGORIES_GET_ONE(int id) {
-        return new Api(Paths.Categories.GET_ONE(String.valueOf(id)), HttpMethod.GET);
+        return new Api(Paths.Categories.GET_ONE(String.valueOf(id)), Route.CATEGORIES_GET_ONE.getMethod());
     }
 
     public static Api CATEGORIES_UPDATE(int id) {
-        return new Api(Paths.Categories.UPDATE(String.valueOf(id)), HttpMethod.POST);
+        return new Api(Paths.Categories.UPDATE(String.valueOf(id)), Route.CATEGORIES_UPDATE.getMethod());
     }
 
     public static Api CATEGORIES_DELETE(int id) {
-        return new Api(Paths.Categories.DELETE(String.valueOf(id)), HttpMethod.POST);
+        return new Api(Paths.Categories.DELETE(String.valueOf(id)), Route.CATEGORIES_DELETE.getMethod());
     }
 }
+
 

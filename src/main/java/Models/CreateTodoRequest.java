@@ -46,6 +46,16 @@ public class CreateTodoRequest {
         this.dueDate = dueDate;
     }
 
+    public CreateTodoRequest(String title, String description, TodoStatus status, LocalDate dueDate, Integer categoryId) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.dueDate = dueDate;
+        this.categoryId = categoryId;
+    }
+    
+    
+
     public String getTitle() {
         return title;
     }

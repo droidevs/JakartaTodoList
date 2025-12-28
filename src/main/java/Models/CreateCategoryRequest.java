@@ -15,6 +15,16 @@ import jakarta.validation.constraints.Size;
  */
 public class CreateCategoryRequest {
 
+    public CreateCategoryRequest() {
+    }
+
+    public CreateCategoryRequest(String name, String color, String description) {
+        this.name = name;
+        this.color = color;
+        this.description = description;
+    }
+    
+
     @NotBlank
     @Size(max = 100)
     private String name;

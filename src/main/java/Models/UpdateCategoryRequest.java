@@ -15,6 +15,17 @@ import jakarta.validation.constraints.Positive;
  */
 public class UpdateCategoryRequest {
 
+    public UpdateCategoryRequest() {
+    }
+
+    public UpdateCategoryRequest(Integer id, String name, String color, String description) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.description = description;
+    }
+
+    
     @NotNull
     @Positive
     private Integer id;

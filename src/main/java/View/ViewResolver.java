@@ -21,6 +21,7 @@ public class ViewResolver {
     public static final String INDEX = BASE_PATH + "index.jsp";
     public static final String LOGIN = BASE_PATH + "login.jsp";
     public static final String SIGNUP = BASE_PATH + "signup.jsp";
+    public static final String LOGOUT = BASE_PATH + "logout.jsp";
     public static final String TODOS = BASE_PATH + "todos.jsp";
     public static final String TODO_FORM = BASE_PATH + "TodoForm.jsp";
     public static final String TODO_VIEW = BASE_PATH + "ViewTodo.jsp";

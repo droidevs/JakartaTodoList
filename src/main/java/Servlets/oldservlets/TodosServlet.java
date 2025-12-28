@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package TodoServlet;
+package Servlets.oldservlets;
 import Data.Todo;
 import Services.TodoService;
 import Services.impl.TodoServiceImpl2;
@@ -19,12 +19,12 @@ import java.util.List;
 
 
 @WebServlet("/todos")
-public class TodoServlet extends HttpServlet {
+public class TodosServlet extends HttpServlet {
 
     //private final TodoServiceImpl todoService;
     private final TodoService todoService;
 
-    public TodoServlet() {
+    public TodosServlet() {
         //this.todoService = new TodoServiceImpl();
         this.todoService = new TodoServiceImpl2();
     }

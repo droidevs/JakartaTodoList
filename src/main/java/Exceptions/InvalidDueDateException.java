@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author admin
  */
-public class InvalidDueDateException extends Exception {
+public class InvalidDueDateException extends RuntimeException {
     
     public InvalidDueDateException() {
         super("Invalid due date");

@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author Mouad OUMOUS
  */
-public class PasswordNotConfirmedException extends Exception {
+public class PasswordNotConfirmedException extends RuntimeException {
 
     public PasswordNotConfirmedException() {
         super("Confirm your password first");

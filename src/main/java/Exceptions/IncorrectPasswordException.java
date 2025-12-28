@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author Mouad OUMOUS
  */
-public class IncorrectPasswordException extends Exception {
+public class IncorrectPasswordException extends RuntimeException {
 
     public IncorrectPasswordException() {
         super("Invalid User or Password Exception");

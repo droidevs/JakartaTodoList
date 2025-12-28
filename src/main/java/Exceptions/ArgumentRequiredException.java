@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author admin
  */
-public class ArgumentRequiredException extends Exception{
+public class ArgumentRequiredException extends RuntimeException{
 
     public ArgumentRequiredException() {
         super("Argument required");

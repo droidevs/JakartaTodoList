@@ -13,7 +13,7 @@ import java.util.Set;
  * @author admin
  * @param <?>
  */
-public class ValidationException extends Exception {
+public class ValidationException extends RuntimeException {
 
     private final Set<? extends ConstraintViolation<?>> violations;
 

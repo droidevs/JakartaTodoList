@@ -14,17 +14,17 @@ public final class PathParams {
 
     // TODOS
     public static final class Todos {
-        public static final String ID = "id";
+        public static final String ID = "todoId";
     }
 
     // CATEGORIES
     public static final class Categories {
-        public static final String ID = "id";
+        public static final String ID = "categoryId";
     }
 
     // USERS
     public static final class Users {
-        public static final String ID = "id"; // optional if you ever have IDs
+        public static final String ID = "userId"; // optional if you ever have IDs
     }
 
     // AUTH (usually no path params, just POST endpoints)

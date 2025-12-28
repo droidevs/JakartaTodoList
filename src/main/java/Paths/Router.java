@@ -4,6 +4,11 @@
  */
 package Paths;
 
+import Errors.ErrorUtils;
+import Exceptions.ExceptionUtils;
+import Exceptions.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,14 +16,32 @@ import java.util.Map;
  *
  * @author admin
  */
-
 public final class Router {
 
-    private Router() {}
+    public Router() {
+    }
+
+    public Router.RouteMatch matchRoute(HttpServletRequest req) {
+        String path = req.getPathInfo(); // gets path after servlet mapping
+        HttpMethod method = HttpMethod.valueOf(req.getMethod().toUpperCase());
+
+        Router.RouteMatch match = Router.match(path, method);
+        if (match == null) {
+            // If no route matches, send 404
+            try {
+                throw new ResourceNotFoundException();
+            } catch (Exception e) {
+                // todo : handle exception
+            }
+        }
+        return match;
+    }
 
     public static RouteMatch match(String path, HttpMethod method) {
         for (Route route : Route.values()) {
-            if (route.getMethod()!= method) continue;
+            if (route.getMethod() != method) {
+                continue;
+            }
 
             Map<String, String> params = extractParams(route.getPath(), path);
             if (params != null) {
@@ -33,7 +56,9 @@ public final class Router {
         String[] patternParts = pattern.split("/");
         String[] pathParts = path.split("/");
 
-        if (patternParts.length != pathParts.length) return null;
+        if (patternParts.length != pathParts.length) {
+            return null;
+        }
 
         Map<String, String> params = new HashMap<>();
         for (int i = 0; i < patternParts.length; i++) {
@@ -49,6 +74,7 @@ public final class Router {
     }
 
     public static class RouteMatch {
+
         private final Route route;
         private final Map<String, String> params;
 
@@ -57,8 +83,12 @@ public final class Router {
             this.params = params;
         }
 
-        public Route getRoute() { return route; }
-        public Map<String, String> getParams() { return params; }
+        public Route getRoute() {
+            return route;
+        }
+
+        public Map<String, String> getParams() {
+            return params;
+        }
     }
 }
-

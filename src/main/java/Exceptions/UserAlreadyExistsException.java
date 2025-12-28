@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author Mouad OUMOUS
  */
-public class UserAlreadyExistsException extends Exception{
+public class UserAlreadyExistsException extends RuntimeException{
 
     public UserAlreadyExistsException() {
         super("Username already taken");

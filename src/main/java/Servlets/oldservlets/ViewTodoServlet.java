@@ -2,39 +2,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package TodoServlet;
+package Servlets.oldservlets;
 
-import Exceptions.ActionDeniedException;
-import Models.DeleteTodoRequest;
-import Repositories.TodoRepository;
-import Repositories.impl.TodoRepositoryJdbc;
+import Models.GetTodoRequest;
 import Services.TodoService;
-import Services.impl.TodoServiceImpl;
 import Services.impl.TodoServiceImpl2;
 import Utils.ExceptionHandlerUtil;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Objects;
-
 /**
  *
  * @author Mouad OUMOUS
  */
-@WebServlet("/todo/delete")
-public class DeleteTodoServlet extends HttpServlet {
-
+@WebServlet("/todo/view")
+public class ViewTodoServlet extends HttpServlet {
 
     private final TodoService todoService;
 
-    public DeleteTodoServlet() {
+    public ViewTodoServlet() {
+        //this.todoService = new TodoServiceImpl();
         this.todoService = new TodoServiceImpl2();
     }
     
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -47,20 +41,24 @@ public class DeleteTodoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         Integer id;
+
         try {
             id = Integer.valueOf(request.getParameter("id"));
-            Integer sessionUser = (Integer) request.getSession().getAttribute("userId");
-            var deleteRequest = new DeleteTodoRequest(id);
-            todoService.deleteTodo(deleteRequest, sessionUser);
+            var sessionUser = (Integer) request.getSession().getAttribute("userId");
+            
+            var todo = todoService.getTodo(new GetTodoRequest(id), 
+                    sessionUser
+            );
+            request.setAttribute("todo", todo);
+            request.getRequestDispatcher("/ViewTodo.jsp").forward(request, response);
+            
         } catch (NumberFormatException e) {
-            id = -1;
-        } catch (Exception e) {
-            ExceptionHandlerUtil.handle(request, response, e, null);
-            return;
+            response.sendRedirect(request.getContextPath()+ "/todos");
+        } catch(Exception e) {
+            ExceptionHandlerUtil.handle(request, response, e, "TodoView.jsp");
         }
-        
-        response.sendRedirect(request.getContextPath()+"/todos");
     }
-   
+    
 }

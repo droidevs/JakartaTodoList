@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package TodoServlet;
+package Servlets.oldservlets;
 
 import Repositories.UserRepository;
 import Repositories.impl.UserRepositoryJdbc;
@@ -14,10 +14,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- *
+ * @deprecated replaced by centralized auth servlet
  * @author Mouad OUMOUS
  */
-@WebServlet("/logout")
+@Deprecated
+//@WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
     

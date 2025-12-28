@@ -13,7 +13,7 @@ import java.util.Set;
  * @author admin
  */
 @Deprecated
-public class TodoValidationException extends Exception {
+public class TodoValidationException extends RuntimeException {
     
     
     private final Set<ConstraintViolation<Todo>> violations;

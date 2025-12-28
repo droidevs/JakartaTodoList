@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package TodoServlet;
+package Servlets.oldservlets;
 
 import Utils.DatabaseUtil;
 import Data.User;
@@ -27,16 +27,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
+ * @deprecated replaced by centralized auth servlet
  * @author Mouad OUMOUS
  */
-@WebServlet("/login")
+@Deprecated
+//@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     private final AuthServiceImpl service;
 
     public LoginServlet() {
         service = new AuthServiceImpl();
+        
     }
     
     @Override

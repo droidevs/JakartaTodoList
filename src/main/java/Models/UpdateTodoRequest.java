@@ -32,6 +32,8 @@ public class UpdateTodoRequest {
     
     @NotNull(message = "Status is required")
     TodoStatus status;
+    
+    Integer categoryId;
 
     public UpdateTodoRequest() {
     }
@@ -56,6 +58,15 @@ public class UpdateTodoRequest {
         this.dueDate = dueDate;
         this.status = status;
     }
+
+    public UpdateTodoRequest(Integer id, String title, String description, LocalDate dueDate, TodoStatus status, Integer categoryId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.status = status;
+        this.categoryId = categoryId;
+    }
     
     
     
@@ -79,6 +90,10 @@ public class UpdateTodoRequest {
     public TodoStatus getStatus() {
         return status;
     }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
     
     
     
@@ -101,6 +116,10 @@ public class UpdateTodoRequest {
 
     public void setStatus(TodoStatus status) {
         this.status = status;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
     
     

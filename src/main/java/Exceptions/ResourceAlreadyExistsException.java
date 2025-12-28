@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author admin
  */
-public class ResourceAlreadyExistsException extends Exception {
+public class ResourceAlreadyExistsException extends RuntimeException {
 
     public ResourceAlreadyExistsException() {
         super("Resource already in exists with same attributes");

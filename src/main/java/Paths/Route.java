@@ -26,9 +26,11 @@ public enum Route {
     USERS_DELETE_PROFILE("Delete Profile", HttpMethod.POST, BasePaths.USERS + "/me/delete"),
     // --- TODOS ---
     TODOS_LIST("List Todos", HttpMethod.GET, BasePaths.TODOS),
-    TODOS_CREATE("Create Todo", HttpMethod.POST, BasePaths.TODOS),
+    TODOS_CREATE("Create Todo", HttpMethod.POST, BasePaths.TODOS + "/create"),
+    TODOS_CREATE_FORM("Create Todo Form", HttpMethod.GET, BasePaths.TODOS + "/create"),
     TODOS_GET_ONE("Get Todo", HttpMethod.GET, BasePaths.TODOS + "/{" + PathParams.Todos.ID + "}"),
     TODOS_UPDATE("Update Todo", HttpMethod.POST, BasePaths.TODOS + "/{" + PathParams.Todos.ID + "}/update"),
+    TODOS_EDIT_FORM("Update Todo Form", HttpMethod.GET, BasePaths.TODOS + "/{" + PathParams.Todos.ID + "}/update"),
     TODOS_DELETE("Delete Todo", HttpMethod.POST, BasePaths.TODOS + "/{" + PathParams.Todos.ID + "}/delete"),
     // --- CATEGORIES ---
     CATEGORIES_LIST("List Categories", HttpMethod.GET, BasePaths.CATEGORIES),
