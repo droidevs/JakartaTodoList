@@ -14,6 +14,8 @@ public class Category {
     private String name;
     private String color;
     private String description;
+    
+    private User user;
 
     // REQUIRED by Hibernate
     public Category() {}
@@ -38,6 +40,11 @@ public class Category {
         return color;
     }
 
+    public User getUser() {
+        return user;
+    }
+    
+
     public void setColor(String color) {
         this.color = color;
     }
@@ -49,4 +56,9 @@ public class Category {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+     
 }
