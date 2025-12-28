@@ -4,6 +4,7 @@
  */
 package Mappers.impl;
 
+import Data.Category;
 import Data.Todo;
 import Data.User;
 import Mappers.TodoMapper;
@@ -17,13 +18,15 @@ import Models.UpdateTodoRequest;
 public class TodoMapperImpl implements TodoMapper {
 
     @Override
-    public Todo toEntity(CreateTodoRequest request, User user) {
+    public Todo toEntity(CreateTodoRequest request, User user, Category category) {
         Todo todo = new Todo();
         todo.setTitle(request.getTitle());
         todo.setDescription(request.getDescription());
         todo.setStatus(request.getStatus());
         todo.setDueDate(request.getDueDate());
         todo.setUser(user);
+        if(category != null)
+            todo.setCategory(category);
         return todo;
     }
 
@@ -39,6 +42,11 @@ public class TodoMapperImpl implements TodoMapper {
         if (request.getDueDate() != null) {
             todo.setDueDate(request.getDueDate());
         }
+    }
+
+    @Override
+    public Todo toEntity(CreateTodoRequest request, User user) {
+        return toEntity(request, user, null);
     }
     
 }

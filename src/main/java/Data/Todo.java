@@ -29,6 +29,8 @@ public class Todo {
     
     private User user;
     
+    private Category category;
+    
     @Deprecated
     private Integer user_id;
     
@@ -93,6 +95,11 @@ public class Todo {
     public LocalDate getDueDate() {
         return dueDate;
     }
+
+    public Category getCategory() {
+        return category;
+    }
+    
     
     
 
@@ -119,6 +126,12 @@ public class Todo {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+    
+    
     
     
    

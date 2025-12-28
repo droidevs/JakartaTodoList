@@ -8,7 +8,7 @@ package Exceptions;
  *
  * @author admin
  */
-public class ResourceNotFoundException extends Exception{
+public class ResourceNotFoundException extends RuntimeException {
 
     public ResourceNotFoundException() {
         super("Resource not found");

@@ -8,6 +8,7 @@ import Constants.TodoStatus;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -30,6 +31,10 @@ public class CreateTodoRequest {
     @NotNull(message = "Due date is required")
     @FutureOrPresent(message = "Due date must be today or in the future")
     LocalDate dueDate;
+    
+    @NotNull
+    @Positive
+    private Integer categoryId;
 
     public CreateTodoRequest() {
     }
@@ -57,6 +62,11 @@ public class CreateTodoRequest {
         return dueDate;
     }
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+    
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -72,7 +82,9 @@ public class CreateTodoRequest {
     public void setStatus(TodoStatus status) {
         this.status = status;
     }
-    
-    
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
     
 }

@@ -6,6 +6,7 @@ package Models;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -24,6 +25,7 @@ public class CreateCategoryRequest {
 
     @Size(max = 300)
     private String description;
+    
 
     public String getName() {
         return name;

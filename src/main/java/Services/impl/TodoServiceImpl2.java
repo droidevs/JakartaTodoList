@@ -5,6 +5,7 @@
 package Services.impl;
 
 import Constants.TodoStatus;
+import Data.Category;
 import Data.Todo;
 import Data.User;
 import Exceptions.ActionDeniedException;
@@ -20,8 +21,10 @@ import Models.CreateTodoRequest;
 import Models.DeleteTodoRequest;
 import Models.GetTodoRequest;
 import Models.UpdateTodoRequest;
+import Repositories.CategoryRepository;
 import Repositories.TodoRepository;
 import Repositories.UserRepository;
+import Repositories.impl.CategoryRepositoryHibernete;
 import Repositories.impl.TodoRepositoryHibernete;
 import Repositories.impl.UserRepositoryHibernete;
 import Services.TodoService;
@@ -38,18 +41,19 @@ import java.util.Objects;
  * @author admin
  */
 public class TodoServiceImpl2 implements TodoService {
-    
+
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final TodoMapper todoMapper;
 
     public TodoServiceImpl2() {
         this.todoRepository = new TodoRepositoryHibernete();
         this.userRepository = new UserRepositoryHibernete();
+        this.categoryRepository = new CategoryRepositoryHibernete();
         this.todoMapper = new TodoMapperImpl();
     }
 
-    
     @Override
     public List<Todo> getTodos(Integer userId) {
         return todoRepository.findByUserId(userId);
@@ -72,17 +76,16 @@ public class TodoServiceImpl2 implements TodoService {
         return todo;
     }
 
-    
     @Override
     public Todo createTodo(CreateTodoRequest request, Integer sessionUserId)
             throws InvalidDueDateException,
-                   ArgumentRequiredException,
-                   //TodoValidationException,
-                   ValidationException,
-                   ResourceAccessDeniedException {
+            ArgumentRequiredException,
+            //TodoValidationException,
+            ValidationException,
+            ResourceAccessDeniedException {
 
         RequestValidator.validate(request);
-        
+
         validateDueDate(request.getDueDate());
 
         User user = userRepository.findById(sessionUserId);
@@ -90,27 +93,30 @@ public class TodoServiceImpl2 implements TodoService {
             throw new ResourceAccessDeniedException();
         }
 
+        Category category = categoryRepository.findById(request.getCategoryId());
+        if (category == null) {
+            throw new ResourceNotFoundException();
+        }
+        
         Todo todo = todoMapper.toEntity(request, user);
-
+        
         //TodoValidator.validate(todo);
-
         todoRepository.save(todo);
         return todo;
     }
 
-    
     @Override
     public Todo updateTodo(UpdateTodoRequest request, Integer sessionUserId)
             throws ResourceAccessDeniedException,
-                   ActionDeniedException,
-                   InvalidDueDateException,
-                   ArgumentRequiredException,
-                   //TodoValidationException,
-                   ValidationException,
-                   ResourceNotFoundException {
+            ActionDeniedException,
+            InvalidDueDateException,
+            ArgumentRequiredException,
+            //TodoValidationException,
+            ValidationException,
+            ResourceNotFoundException {
 
         RequestValidator.validate(request);
-        
+
         Todo todo = todoRepository.findById(request.getId());
 
         if (todo == null) {
@@ -121,8 +127,8 @@ public class TodoServiceImpl2 implements TodoService {
             throw new ResourceAccessDeniedException();
         }
 
-        if (todo.getStatus() == TodoStatus.OVERDUE &&
-            !Objects.equals(todo.getDueDate(), request.getDueDate())) {
+        if (todo.getStatus() == TodoStatus.OVERDUE
+                && !Objects.equals(todo.getDueDate(), request.getDueDate())) {
             throw new ActionDeniedException();
         }
 
@@ -137,33 +143,30 @@ public class TodoServiceImpl2 implements TodoService {
         if (todo.getStatus() == TodoStatus.OVERDUE) {
             request.setDueDate(null);
         }
-        
+
         todoMapper.updateEntity(todo, request);
 
         todo.setStatus(request.getStatus());
 
         //TodoValidator.validate(todo);
-
         todoRepository.update(todo);
         return todo;
     }
 
-    
     @Override
     public void deleteTodo(DeleteTodoRequest request, Integer sessionUserId)
             throws ActionDeniedException {
 
         Todo todo = todoRepository.findById(request.getId());
 
-        if (todo == null ||
-            !Objects.equals(todo.getUser().getId(), sessionUserId)) {
+        if (todo == null
+                || !Objects.equals(todo.getUser().getId(), sessionUserId)) {
             throw new ActionDeniedException();
         }
 
         todoRepository.delete(todo.getId());
     }
 
-    
     @Override
     public void updateTodoStatus(Integer todoId, Integer userId, TodoStatus status)
             throws ActionDeniedException, ResourceNotFoundException {
@@ -184,16 +187,15 @@ public class TodoServiceImpl2 implements TodoService {
         todoRepository.update(todo);
     }
 
-    
     @Override
     public void markOverdueTodos(Integer userId) {
         List<Todo> todos = getTodos(userId);
         LocalDate today = LocalDate.now();
 
         for (Todo todo : todos) {
-            if (todo.getDueDate() != null &&
-                todo.getStatus() != TodoStatus.COMPLETED &&
-                todo.getDueDate().isBefore(today)) {
+            if (todo.getDueDate() != null
+                    && todo.getStatus() != TodoStatus.COMPLETED
+                    && todo.getDueDate().isBefore(today)) {
 
                 todo.setStatus(TodoStatus.OVERDUE);
                 todoRepository.update(todo);
