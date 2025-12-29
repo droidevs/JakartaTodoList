@@ -11,7 +11,7 @@ package View;
 
 public final class CssResolver {
 
-    private static final String BASE_PATH = "/assets/css/";
+    private static final String BASE_PATH = "/WEB-INF/assets/css/";
     private static final String EXT = ".css";
 
     // Example CSS files
