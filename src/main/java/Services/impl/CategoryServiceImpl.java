@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Services;
+package Services.impl;
 
 import Data.Category;
 import Data.User;
@@ -14,11 +14,14 @@ import Exceptions.ValidationException;
 import Mappers.CategoryMapper;
 import Mappers.impl.CategoryMapperImpl;
 import Models.CreateCategoryRequest;
+import Models.DeleteCategoryRequest;
+import Models.GetCategoryRequest;
 import Models.UpdateCategoryRequest;
 import Repositories.CategoryRepository;
 import Repositories.UserRepository;
 import Repositories.impl.CategoryRepositoryHibernete;
 import Repositories.impl.UserRepositoryHibernete;
+import Services.CategoryService;
 import Validators.RequestValidator;
 import java.util.List;
 
@@ -87,14 +90,27 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void delete(int id, int userId) {
+    public void delete(DeleteCategoryRequest req, int userId) {
 
         Category category
-                = categoryRepository.findByIdAndUser(id, userId);
+                = categoryRepository.findByIdAndUser(req.getId(), userId);
 
         if (category == null) {
             throw new ResourceAccessDeniedException();
         }
-        categoryRepository.delete(id);
+        categoryRepository.delete(req.getId());
+    }
+
+    @Override
+    public Category get(GetCategoryRequest request, int userId) {
+       var category = categoryRepository.findById(request.getId());
+       
+        if (category == null)
+            throw new ResourceNotFoundException();
+        
+        if (category.getUser().getId() != userId)
+            throw new ResourceAccessDeniedException();
+        
+        return category;
     }
 }

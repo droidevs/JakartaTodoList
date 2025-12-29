@@ -1,0 +1,44 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Dec 29, 2025, 10:51:18 AM
+    Author     : admin
+*/
+
+/* CATEGORY CARD */
+.category-card {
+    border-radius: 14px;
+    background: #fff;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* COLOR STRIP */
+.category-color {
+    height: 6px;
+    width: 100%;
+}
+
+/* ANIMATION */
+.category-animate {
+    animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+

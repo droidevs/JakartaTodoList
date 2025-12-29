@@ -10,6 +10,8 @@ import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
 import Exceptions.ValidationException;
 import Models.CreateCategoryRequest;
+import Models.DeleteCategoryRequest;
+import Models.GetCategoryRequest;
 import Models.UpdateCategoryRequest;
 import java.util.List;
 
@@ -18,6 +20,9 @@ import java.util.List;
  * @author admin
  */
 public interface CategoryService {
+    
+    
+    Category get(GetCategoryRequest request, int userId);
 
     Category create(CreateCategoryRequest request, int userId)
             throws ValidationException, ResourceAlreadyExistsException;
@@ -27,6 +32,6 @@ public interface CategoryService {
 
     List<Category> getAll(int userId);
 
-    void delete(int id, int userId) throws ActionDeniedException;
+    void delete(DeleteCategoryRequest request, int userId) throws ActionDeniedException;
 }
 

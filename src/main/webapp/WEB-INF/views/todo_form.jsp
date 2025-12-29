@@ -1,10 +1,12 @@
 <%-- 
-    Document   : todo_create_form
-    Created on : Dec 28, 2025, 7:10:37 PM
+    Document   : todo_form
+    Created on : Dec 29, 2025, 12:02:25 PM
     Author     : admin
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@page import="View.ComponentResolver"%>
 
 <%@page import="java.util.List"%>
 <%@page import="View.ViewResolver"%>
@@ -13,7 +15,7 @@
 <%@page import="Data.Category"%>
 <%@page import="Paths.Api"%>
 
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>" %>
+<%@ include file="<%= ComponentResolver.HEADER%>" %>
 
 <%
     Todo todo = (Todo) request.getAttribute("todo");
@@ -56,14 +58,14 @@
         <div class="card-body p-5">
 
             <h3 class="mb-4 text-center fw-bold">
-                <%= isEdit ? "✏️ Edit Todo" : "➕ Create New Todo" %>
+                <%= isEdit ? "✏️ Edit Todo" : "➕ Create New Todo"%>
             </h3>
 
-            <form method="post" action="<%= actionUrl %>">
+            <form method="post" action="<%= actionUrl%>">
 
-                <% if (isEdit) { %>
-                    <input type="hidden" name="id" value="<%= todo.getId() %>">
-                <% } %>
+                <% if (isEdit) {%>
+                <input type="hidden" name="id" value="<%= todo.getId()%>">
+                <% }%>
 
                 <!-- TITLE -->
                 <div class="mb-3">
@@ -71,7 +73,7 @@
                     <input type="text"
                            name="title"
                            class="form-control form-control-lg"
-                           value="<%= todo.getTitle() %>"
+                           value="<%= todo.getTitle()%>"
                            required>
                 </div>
 
@@ -81,7 +83,7 @@
                     <textarea name="description"
                               class="form-control"
                               rows="4"
-                              required><%= todo.getDescription() %></textarea>
+                              required><%= todo.getDescription()%></textarea>
                 </div>
 
                 <!-- DUE DATE -->
@@ -90,9 +92,9 @@
                     <input type="date"
                            name="dueDate"
                            class="form-control"
-                           value="<%= todo.getDueDate() %>"
-                           min="<%= java.time.LocalDate.now() %>"
-                           <%= todo.getStatus() == TodoStatus.OVERDUE ? "disabled" : "" %>>
+                           value="<%= todo.getDueDate() != null ? todo.getDueDate().toString() : ""%>"
+                           min="<%= java.time.LocalDate.now().toString()%>"
+                           <%= todo.getStatus() == TodoStatus.OVERDUE ? "disabled" : ""%> >
                 </div>
 
                 <!-- CATEGORY -->
@@ -100,11 +102,11 @@
                     <label class="form-label fw-semibold">Category</label>
                     <select name="categoryId" class="form-select" required>
                         <option value="">-- Select category --</option>
-                        <% for (Category c : categories) { %>
-                            <option value="<%= c.getId() %>"
-                                <%= c.getId() == todo.getCategory().getId()? "selected" : "" %>>
-                                <%= c.getName() %>
-                            </option>
+                        <% for (Category c : categories) {%>
+                        <option value="<%= c.getId()%>"
+                                <%= c.getId() == todo.getCategory().getId() ? "selected" : ""%> >
+                            <%= c.getName()%>
+                        </option>
                         <% } %>
                     </select>
                 </div>
@@ -120,24 +122,26 @@
 
                                 boolean disabled = false;
 
-                                if (current == TodoStatus.COMPLETED && s != TodoStatus.COMPLETED)
+                                if (current == TodoStatus.COMPLETED && s != TodoStatus.COMPLETED) {
                                     disabled = true;
+                                }
 
-                                if (current != TodoStatus.NEW && s == TodoStatus.NEW)
+                                if (current != TodoStatus.NEW && s == TodoStatus.NEW) {
                                     disabled = true;
+                                }
 
-                                if (current == TodoStatus.OVERDUE &&
-                                        (s == TodoStatus.NEW || s == TodoStatus.IN_PROGRESS))
+                                if (current == TodoStatus.OVERDUE
+                                        && (s == TodoStatus.NEW || s == TodoStatus.IN_PROGRESS))
                                     disabled = true;
                         %>
 
-                        <option value="<%= s.name() %>"
-                                <%= s == current ? "selected" : "" %>
-                                <%= disabled ? "disabled" : "" %>>
-                            <%= s.name().replace("_", " ") %>
+                        <option value="<%= s.name()%>"
+                                <%= s == current ? "selected" : ""%>
+                                <%= disabled ? "disabled" : ""%>>
+                            <%= s.name().replace("_", " ")%>
                         </option>
 
-                        <% } %>
+                        <% }%>
                     </select>
                 </div>
 
@@ -145,20 +149,20 @@
                 <div class="d-grid">
                     <button type="submit"
                             class="btn btn-primary btn-lg fw-bold">
-                        <%= isEdit ? "Update Todo" : "Create Todo" %>
+                        <%= isEdit ? "Update Todo" : "Create Todo"%>
                     </button>
                 </div>
 
             </form>
 
             <% if (todo.getStatus() == TodoStatus.OVERDUE) { %>
-                <div class="alert alert-warning mt-4">
-                    ⚠ Overdue todos can only be completed after 3 days.
-                </div>
-            <% } %>
+            <div class="alert alert-warning mt-4">
+                ⚠ Overdue todos can only be completed after 3 days.
+            </div>
+            <% }%>
 
         </div>
     </div>
 </div>
 
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>" %>
+<%@ include file="<%= ComponentResolver.FOOTER%>" %>

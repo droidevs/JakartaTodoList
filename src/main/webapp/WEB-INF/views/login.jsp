@@ -7,7 +7,7 @@
 
 <%@page import="View.ViewResolver"%>
 
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
+<%@ include file="<%= ViewResolver.resolve(ComponentResolver.HEADER) %>"%>
 
 
 <h2>Login</h2>
@@ -27,5 +27,5 @@
     <div class="alert alert-danger mt-3"><%= error %></div>
 <% } %>
 
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>
+<%@ include file="<%= ViewResolver.resolve(ComponentResolver.FOOTER) %>"%>
 

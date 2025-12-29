@@ -35,8 +35,18 @@ public enum Route {
     // --- CATEGORIES ---
     CATEGORIES_LIST("List Categories", HttpMethod.GET, BasePaths.CATEGORIES),
     CATEGORIES_CREATE("Create Category", HttpMethod.POST, BasePaths.CATEGORIES),
+    CATEGORIES_CREATE_FORM(
+            "Create Category Form",
+            HttpMethod.GET,
+            BasePaths.CATEGORIES + "/{" + PathParams.Categories.ID + "}/create"
+    ),
     CATEGORIES_GET_ONE("Get Category", HttpMethod.GET, BasePaths.CATEGORIES + "/{" + PathParams.Categories.ID + "}"),
     CATEGORIES_UPDATE("Update Category", HttpMethod.POST, BasePaths.CATEGORIES + "/{" + PathParams.Categories.ID + "}/update"),
+    CATEGORIES_EDIT_FORM(
+            "Edit Category Form",
+            HttpMethod.GET,
+            BasePaths.CATEGORIES + "/{" + PathParams.Categories.ID + "}/edit"
+    ),
     CATEGORIES_DELETE("Delete Category", HttpMethod.POST, BasePaths.CATEGORIES + "/{" + PathParams.Categories.ID + "}/delete");
 
     private final String name;

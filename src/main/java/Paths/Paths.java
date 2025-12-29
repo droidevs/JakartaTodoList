@@ -9,12 +9,13 @@ import jakarta.websocket.server.PathParam;
 /**
  *
  * @author admin
- * 
+ *
  * this class is used by api get get paths and map it to coresponding method
  */
 public final class Paths {
 
-    private Paths() {} // Prevent instantiation
+    private Paths() {
+    } // Prevent instantiation
 
     // --- AUTH ---
     public static final class Auth {
@@ -50,15 +51,21 @@ public final class Paths {
 
     // --- TODOS ---
     public static final class Todos {
+
         public static final String BASE = Route.TODOS_LIST.getPath();
 
-        public static String LIST() { return Route.TODOS_LIST.getPath(); }
-        public static String CREATE() { return Route.TODOS_CREATE.getPath(); }
+        public static String LIST() {
+            return Route.TODOS_LIST.getPath();
+        }
+
+        public static String CREATE() {
+            return Route.TODOS_CREATE.getPath();
+        }
 
         public static String CREATE_FORM() {
             return Route.TODOS_CREATE_FORM.getPath();
         }
-        
+
         public static String GET_ONE(String id) {
             return Route.TODOS_GET_ONE.getPath().replace("{" + PathParams.Todos.ID + "}", id);
         }
@@ -66,7 +73,7 @@ public final class Paths {
         public static String UPDATE(String id) {
             return Route.TODOS_UPDATE.getPath().replace("{" + PathParams.Todos.ID + "}", id);
         }
-        
+
         public static String UPDATE_FORM(String id) {
             return Route.TODOS_UPDATE.getPath().replace("{" + PathParams.Todos.ID + "}", id);
         }
@@ -78,10 +85,20 @@ public final class Paths {
 
     // --- CATEGORIES ---
     public static final class Categories {
+
         public static final String BASE = Route.CATEGORIES_LIST.getPath();
 
-        public static String LIST() { return Route.CATEGORIES_LIST.getPath(); }
-        public static String CREATE() { return Route.CATEGORIES_CREATE.getPath(); }
+        public static String LIST() {
+            return Route.CATEGORIES_LIST.getPath();
+        }
+
+        public static String CREATE() {
+            return Route.CATEGORIES_CREATE.getPath();
+        }
+
+        public static String CREATE_FORM() {
+            return Route.CATEGORIES_CREATE_FORM.getPath();
+        }
 
         public static String GET_ONE(String id) {
             return Route.CATEGORIES_GET_ONE.getPath().replace("{" + PathParams.Categories.ID + "}", id);
@@ -89,6 +106,10 @@ public final class Paths {
 
         public static String UPDATE(String id) {
             return Route.CATEGORIES_UPDATE.getPath().replace("{" + PathParams.Categories.ID + "}", id);
+        }
+
+        public static String EDIT_FORM(String id) {
+            return Route.CATEGORIES_EDIT_FORM.getPath().replace("{" + PathParams.Categories.ID + "}", id);
         }
 
         public static String DELETE(String id) {

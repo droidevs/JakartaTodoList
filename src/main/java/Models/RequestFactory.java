@@ -77,6 +77,15 @@ public final class RequestFactory {
                 req.getParameter(CategoryParams.DESCRIPTION)
         );
     }
+    
+    
+    public static GetCategoryRequest getCategory(int id) {
+        return new GetCategoryRequest(id);
+    }
+    
+    public static DeleteCategoryRequest deleteCategory(int id) {
+        return new DeleteCategoryRequest(id);
+    }
 
     public static LoginRequest login(HttpServletRequest req) {
 
