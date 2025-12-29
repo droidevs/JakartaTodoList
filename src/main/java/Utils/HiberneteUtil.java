@@ -31,6 +31,7 @@ public class HiberneteUtil {
             // Add annotated classes
             configuration.addResource("WEB-INF/mappings/User.hbm.xml");
             configuration.addResource("WEB-INF/mappings/Todo.hbm.xml");
+            configuration.addResource("WEB-INF/mappings/Category.hbm.xml");
 
             
             sessionFactory = configuration.buildSessionFactory();
