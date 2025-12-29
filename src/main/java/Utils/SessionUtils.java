@@ -38,6 +38,9 @@ public final class SessionUtils {
             session.invalidate();
         }
     }
+    public static String getSessionUserName(HttpSession session) {
+        return (String) session.getAttribute("username");
+    }
     
     public static Integer getLoggedUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);

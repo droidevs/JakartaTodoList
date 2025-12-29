@@ -4,6 +4,7 @@
     Author     : Mouad OUMOUS
 --%>
 
+<%@page import="Utils.SessionUtils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
@@ -45,7 +46,7 @@
     <body>
 
         <%
-            String username = (String) session.getAttribute("user");
+            String username = (String) SessionUtils.getSessionUserName(session);
         %>    
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
             <div class="container">

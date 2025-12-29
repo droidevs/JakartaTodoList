@@ -4,6 +4,8 @@
  */
 package Filters;
 
+import Paths.Api;
+import Utils.SessionUtils;
 import java.io.IOException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -28,7 +30,7 @@ public class HomeFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) sr;
         HttpServletResponse resp = (HttpServletResponse) sr1;
         
-        HttpSession session = req.getSession(false);
+        Boolean isLoggedIn = SessionUtils.isAuthenticated(req);
         
         String path = req.getRequestURI().substring(req.getContextPath().length());
        
@@ -37,9 +39,9 @@ public class HomeFilter implements Filter {
         if (path.equals("/") || path.isEmpty()) {
             System.out.println(true);
             // The request is for the root of your web app
-            if (session != null && session.getAttribute("user") != null) {
+            if (isLoggedIn) {
                 // User is signed in redirect to todos
-                resp.sendRedirect(req.getContextPath() + "/todos");
+                resp.sendRedirect(req.getContextPath() + Api.TODOS_LIST);
                 return;
             }
         }
