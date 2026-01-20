@@ -1,4 +1,3 @@
-
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
@@ -9,16 +8,14 @@
         <id name="id" column="id">
             <generator class="identity" />
         </id>
-        
+
         <property name="username" column="username" not-null="true" unique="true" />
         <property name="fullName" column="full_name" not-null="true"/>
         <property name="passwordHash" column="password_hash" not-null="true" />
-        
+
         <set name="todos" cascade="all" inverse="true" lazy="true">
             <key column="user_id"/>
             <one-to-many class="Todo" />
         </set>
     </class>
 </hibernate-mapping>
-
-

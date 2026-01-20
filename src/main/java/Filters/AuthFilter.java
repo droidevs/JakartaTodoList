@@ -5,6 +5,7 @@
 package Filters;
 
 
+import Paths.Api;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,10 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-/**
- *
- * @author Mouad OUMOUS
- */
+
 
 @WebFilter("/*")
 public class AuthFilter implements Filter {
@@ -27,28 +25,28 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-        
+
         String path = req.getRequestURI().substring(req.getContextPath().length());
-        
+
         if ("/".equals(path)) {
             // Skip filtering for root path
             chain.doFilter(request, response);
             return;
         }
-        // Allow Login page and static resources
-        if (path.contains("login") || path.contains("css") || path.contains("js")) {
+        // Allow Login page, register page and static resources
+        if (path.contains("login") || path.contains("register") || path.contains("css") || path.contains("js")) {
             chain.doFilter(request, response);
             return;
         }
-        
-        HttpSession session = req.getSession();
-        if (session == null || session.getAttribute("user") == null) {
+
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("userId") == null) {
             System.out.println("login");
-            resp.sendRedirect(req.getContextPath() + Paths.Api.AUTH_LOGIN);
+            resp.sendRedirect(req.getContextPath() + Api.AUTH_LOGIN);
         } else {
             chain.doFilter(request, response);
         }
-        
+
     }
-    
+
 }

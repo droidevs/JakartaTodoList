@@ -1,23 +1,19 @@
-
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-    
 
 <hibernate-mapping package="Data">
     <class name="Todo" table="todos">
         <id name="id" column="id">
             <generator class="identity"/>
         </id>
-        
+
         <property name="title" column="title" not-null="true" />
         <property name="description" column="description" />
         <property name="status" column="status" />
         <property name="dueDate" column="due_date" />
         <many-to-one name="user" class="User" column="user_id" not-null="true"/>
-
-        <many-to-one name="category" class="Category" column="category_id" not-null="true" fetch="select" />
-        
+        <many-to-one name="category" class="Category" column="category_id" not-null="false" fetch="select" />
     </class>
 </hibernate-mapping>

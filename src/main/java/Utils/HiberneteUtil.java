@@ -29,9 +29,9 @@ public class HiberneteUtil {
             configuration.setProperty("hibernate.hbm2ddl.auto", "update"); // optional
             
             // Add annotated classes
-            configuration.addResource("WEB-INF/mappings/User.hbm.xml");
-            configuration.addResource("WEB-INF/mappings/Todo.hbm.xml");
-            configuration.addResource("WEB-INF/mappings/Category.hbm.xml");
+            configuration.addResource("mappings/User.hbm.xml");
+            configuration.addResource("mappings/Todo.hbm.xml");
+            configuration.addResource("mappings/Category.hbm.xml");
 
             
             sessionFactory = configuration.buildSessionFactory();
