@@ -20,17 +20,36 @@ public class HiberneteUtil {
             Configuration configuration = new Configuration();
             
             // Read database configuration from environment variables
+            String dbType = getEnvOrDefault("DB_TYPE", "postgres"); // "postgres" or "sqlserver"
             String dbHost = getEnvOrDefault("DB_HOST", "postgres");
             String dbPort = getEnvOrDefault("DB_PORT", "5432");
             String dbName = getEnvOrDefault("DB_NAME", "db_todo_list");
             String dbUser = getEnvOrDefault("DB_USER", "todouser");
             String dbPassword = getEnvOrDefault("DB_PASSWORD", "todopassword");
 
-            // PostgreSQL configuration
-            String jdbcUrl = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
-            configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-            configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-            configuration.setProperty("hibernate.connection.url", jdbcUrl);
+            if ("sqlserver".equalsIgnoreCase(dbType)) {
+                // Azure SQL Server configuration (production)
+                // Include user and password in URL for Azure SQL compatibility
+                String jdbcUrl = "jdbc:sqlserver://" + dbHost + ":" + dbPort
+                        + ";database=" + dbName
+                        + ";user=" + dbUser
+                        + ";password=" + dbPassword
+                        + ";encrypt=true;trustServerCertificate=false"
+                        + ";hostNameInCertificate=*.database.windows.net"
+                        + ";loginTimeout=30";
+                configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
+                configuration.setProperty("hibernate.connection.driver_class", "com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                configuration.setProperty("hibernate.connection.url", jdbcUrl);
+
+                System.out.println("Hibernate connecting to Azure SQL: " + dbHost + "/" + dbName + " as " + dbUser);
+            } else {
+                // PostgreSQL configuration (local development)
+                String jdbcUrl = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
+                configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+                configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
+                configuration.setProperty("hibernate.connection.url", jdbcUrl);
+            }
+
             configuration.setProperty("hibernate.connection.username", dbUser);
             configuration.setProperty("hibernate.connection.password", dbPassword);
             configuration.setProperty("hibernate.hbm2ddl.auto", "update");

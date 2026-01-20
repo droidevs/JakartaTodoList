@@ -21,21 +21,50 @@ public class DatabaseUtil {
     }
 
     public static Connection getConnection() throws SQLException {
+        String dbType = getEnvOrDefault("DB_TYPE", "postgres"); // "postgres" or "sqlserver"
         String dbHost = getEnvOrDefault("DB_HOST", "postgres");
         String dbPort = getEnvOrDefault("DB_PORT", "5432");
         String dbName = getEnvOrDefault("DB_NAME", "db_todo_list");
         String dbUser = getEnvOrDefault("DB_USER", "todouser");
         String dbPassword = getEnvOrDefault("DB_PASSWORD", "todopassword");
 
-        String url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
+        String url;
+        String driverClass;
 
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new SQLException("PostgreSQL driver not found", e);
+        if ("sqlserver".equalsIgnoreCase(dbType)) {
+            // Azure SQL Server configuration (production)
+            // Include user and password in URL for Azure SQL compatibility
+            url = "jdbc:sqlserver://" + dbHost + ":" + dbPort
+                    + ";database=" + dbName
+                    + ";user=" + dbUser
+                    + ";password=" + dbPassword
+                    + ";encrypt=true;trustServerCertificate=false"
+                    + ";hostNameInCertificate=*.database.windows.net"
+                    + ";loginTimeout=30";
+            driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+
+            System.out.println("Connecting to Azure SQL: " + dbHost + "/" + dbName + " as " + dbUser);
+
+            try {
+                Class.forName(driverClass);
+            } catch (ClassNotFoundException e) {
+                throw new SQLException("Database driver not found: " + driverClass, e);
+            }
+
+            return DriverManager.getConnection(url);
+        } else {
+            // PostgreSQL configuration (local development)
+            url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
+            driverClass = "org.postgresql.Driver";
+
+            try {
+                Class.forName(driverClass);
+            } catch (ClassNotFoundException e) {
+                throw new SQLException("Database driver not found: " + driverClass, e);
+            }
+
+            return DriverManager.getConnection(url, dbUser, dbPassword);
         }
-
-        return DriverManager.getConnection(url, dbUser, dbPassword);
     }
     
 }
