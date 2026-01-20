@@ -19,21 +19,28 @@ public class HiberneteUtil {
         try {
             Configuration configuration = new Configuration();
             
-            
-            // Set properties programmatically
-            configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-            configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
-            configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/db_todo_list");
-            configuration.setProperty("hibernate.connection.username", "root");
-            configuration.setProperty("hibernate.connection.password", "jakarta");
-            configuration.setProperty("hibernate.hbm2ddl.auto", "update"); // optional
-            
-            // Add annotated classes
+            // Read database configuration from environment variables
+            String dbHost = getEnvOrDefault("DB_HOST", "postgres");
+            String dbPort = getEnvOrDefault("DB_PORT", "5432");
+            String dbName = getEnvOrDefault("DB_NAME", "db_todo_list");
+            String dbUser = getEnvOrDefault("DB_USER", "todouser");
+            String dbPassword = getEnvOrDefault("DB_PASSWORD", "todopassword");
+
+            // PostgreSQL configuration
+            String jdbcUrl = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
+            configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+            configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
+            configuration.setProperty("hibernate.connection.url", jdbcUrl);
+            configuration.setProperty("hibernate.connection.username", dbUser);
+            configuration.setProperty("hibernate.connection.password", dbPassword);
+            configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+            configuration.setProperty("hibernate.show_sql", "true");
+
+            // Add XML mappings
             configuration.addResource("mappings/User.hbm.xml");
             configuration.addResource("mappings/Todo.hbm.xml");
             configuration.addResource("mappings/Category.hbm.xml");
 
-            
             sessionFactory = configuration.buildSessionFactory();
         } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed." + ex);
@@ -41,6 +48,14 @@ public class HiberneteUtil {
         }
     }
     
+    /**
+     * Get environment variable or return default value
+     */
+    private static String getEnvOrDefault(String key, String defaultValue) {
+        String value = System.getenv(key);
+        return (value != null && !value.isEmpty()) ? value : defaultValue;
+    }
+
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }

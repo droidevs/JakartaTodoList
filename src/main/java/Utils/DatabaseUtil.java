@@ -15,14 +15,27 @@ import java.sql.SQLException;
 @Deprecated
 public class DatabaseUtil {
     
-    private static final String URL = "jdbc:mysql://localhost:3306/db_todo_list?zeroDateTimeBehavior=CONVERT_TO_NULL";
-    
-    private static final String USER = "root";
-    
-    private static final String PASS = "jakarta";
-    
+    private static String getEnvOrDefault(String key, String defaultValue) {
+        String value = System.getenv(key);
+        return (value != null && !value.isEmpty()) ? value : defaultValue;
+    }
+
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL,USER,PASS);
+        String dbHost = getEnvOrDefault("DB_HOST", "postgres");
+        String dbPort = getEnvOrDefault("DB_PORT", "5432");
+        String dbName = getEnvOrDefault("DB_NAME", "db_todo_list");
+        String dbUser = getEnvOrDefault("DB_USER", "todouser");
+        String dbPassword = getEnvOrDefault("DB_PASSWORD", "todopassword");
+
+        String url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
+
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("PostgreSQL driver not found", e);
+        }
+
+        return DriverManager.getConnection(url, dbUser, dbPassword);
     }
     
 }

@@ -24,34 +24,32 @@ public class DatabaseIntializer implements ServletContextListener {
         try (Connection conn = DatabaseUtil.getConnection()) {
             Statement stmt = conn.createStatement();
 
-            // Create users table first (referenced by other tables)
+            // PostgreSQL syntax
             String sqlUsersTable = "CREATE TABLE IF NOT EXISTS users ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "id SERIAL PRIMARY KEY,"
                     + "username VARCHAR(50) NOT NULL UNIQUE,"
                     + "full_name VARCHAR(100) NOT NULL,"
                     + "password_hash VARCHAR(255) NOT NULL"
                     + ");";
 
-            // Create categories table (referenced by todos)
             String sqlCategories = "CREATE TABLE IF NOT EXISTS categories ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "id SERIAL PRIMARY KEY,"
                     + "name VARCHAR(100) NOT NULL,"
-                    + "color VARCHAR(20) NOT NULL,"
+                    + "color VARCHAR(20),"
                     + "description VARCHAR(300),"
                     + "user_id INT NOT NULL,"
                     + "CONSTRAINT fk_category_user FOREIGN KEY (user_id) REFERENCES users(id),"
                     + "CONSTRAINT uq_user_category_name UNIQUE (user_id, name)"
                     + ");";
 
-            // Create todos table
             String sqlTodosTable = "CREATE TABLE IF NOT EXISTS todos ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "id SERIAL PRIMARY KEY,"
                     + "title VARCHAR(255) NOT NULL,"
                     + "description TEXT,"
                     + "status VARCHAR(20) NOT NULL DEFAULT 'NEW',"
                     + "due_date DATE,"
                     + "user_id INT NOT NULL,"
-                    + "category_id INT NOT NULL,"
+                    + "category_id INT,"
                     + "CONSTRAINT fk_todo_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,"
                     + "CONSTRAINT fk_todo_category FOREIGN KEY (category_id) REFERENCES categories(id)"
                     + ");";
@@ -69,7 +67,7 @@ public class DatabaseIntializer implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        ServletContextListener.super.contextDestroyed(sce); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+        ServletContextListener.super.contextDestroyed(sce);
     }
 
 }

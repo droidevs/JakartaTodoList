@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Filter.java to edit this template
- */
 package Filters;
 
 import Paths.Api;
@@ -26,16 +22,16 @@ public class HomeFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest sr, ServletResponse sr1, FilterChain chain) throws IOException, ServletException {
-        
+
         HttpServletRequest req = (HttpServletRequest) sr;
         HttpServletResponse resp = (HttpServletResponse) sr1;
-        
+
         Boolean isLoggedIn = SessionUtils.isAuthenticated(req);
-        
+
         String path = req.getRequestURI().substring(req.getContextPath().length());
-       
+
         System.out.println(path);
-        
+
         if (path.equals("/") || path.isEmpty()) {
             System.out.println(true);
             // The request is for the root of your web app
@@ -45,8 +41,8 @@ public class HomeFilter implements Filter {
                 return;
             }
         }
-        
+
         chain.doFilter(sr, sr1);
     }
-    
+
 }
