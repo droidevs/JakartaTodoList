@@ -24,43 +24,41 @@ public class DatabaseIntializer implements ServletContextListener {
         try (Connection conn = DatabaseUtil.getConnection()) {
             Statement stmt = conn.createStatement();
 
-            // Create table if not exists
-            String sqlTodosTable = "CREATE TABLE IF NOT EXSTS todos ("
-                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
-                    + "title VARCHAR(255) NOT NULL,"
-                    + "description TEXT"
-                    + "status VARCHAR(20) NOT NULL DEFAULT 'NEW'"
-                    + "due_date DATE"
-                    + ");";
-            String sqlUsersTable = "CREATE TABLE users ("
+            // Create users table first (referenced by other tables)
+            String sqlUsersTable = "CREATE TABLE IF NOT EXISTS users ("
                     + "id INT AUTO_INCREMENT PRIMARY KEY,"
                     + "username VARCHAR(50) NOT NULL UNIQUE,"
                     + "full_name VARCHAR(100) NOT NULL,"
-                    + "password VARCHAR(255) NOT NULL"
-                    + "FOREIGH KEY (user_id) REFERENCES users(id) ON DELETE CASCADE"
+                    + "password_hash VARCHAR(255) NOT NULL"
                     + ");";
 
-            String sqlCategories = "CREATE TABLE categories ("
-                    + "    id INT AUTO_INCREMENT PRIMARY KEY,"
-                    + "    name VARCHAR(100) NOT NULL UNIQUE,"
-                    + "    color VARCHAR(20) NOT NULL,"
-                    + "    description VARCHAR(300)"
-                    + ");"
-                    + "ALTER TABLE todos"
-                    + "ADD COLUMN category_id INT NOT NULL,"
-                    + "ADD CONSTRAINT fk_todo_category"
-                    + "FOREIGN KEY (category_id) REFERENCES categories(id);";
+            // Create categories table (referenced by todos)
+            String sqlCategories = "CREATE TABLE IF NOT EXISTS categories ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "name VARCHAR(100) NOT NULL,"
+                    + "color VARCHAR(20) NOT NULL,"
+                    + "description VARCHAR(300),"
+                    + "user_id INT NOT NULL,"
+                    + "CONSTRAINT fk_category_user FOREIGN KEY (user_id) REFERENCES users(id),"
+                    + "CONSTRAINT uq_user_category_name UNIQUE (user_id, name)"
+                    + ");";
 
-            String sqlUserCategories = "ALTER TABLE categories\n"
-                    + "ADD COLUMN user_id INT NOT NULL,\n"
-                    + "ADD CONSTRAINT fk_category_user\n"
-                    + "FOREIGN KEY (user_id) REFERENCES users(id),\n"
-                    + "ADD CONSTRAINT uq_user_category_name UNIQUE (user_id, name);";
+            // Create todos table
+            String sqlTodosTable = "CREATE TABLE IF NOT EXISTS todos ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    + "title VARCHAR(255) NOT NULL,"
+                    + "description TEXT,"
+                    + "status VARCHAR(20) NOT NULL DEFAULT 'NEW',"
+                    + "due_date DATE,"
+                    + "user_id INT NOT NULL,"
+                    + "category_id INT NOT NULL,"
+                    + "CONSTRAINT fk_todo_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,"
+                    + "CONSTRAINT fk_todo_category FOREIGN KEY (category_id) REFERENCES categories(id)"
+                    + ");";
 
-            stmt.executeUpdate(sqlTodosTable);
             stmt.executeUpdate(sqlUsersTable);
             stmt.executeUpdate(sqlCategories);
-            stmt.execute(sqlUserCategories);
+            stmt.executeUpdate(sqlTodosTable);
 
             System.out.println("Database initialized successfully!");
 

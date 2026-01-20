@@ -19,7 +19,7 @@ import org.hibernate.query.Query;
  * @author admin
  */
 public class TodoRepositoryHibernete implements TodoRepository {
-
+    
     @Override
     public Todo findById(int id) {
         try(Session session = HiberneteUtil.getSessionFactory().openSession()) {
@@ -95,7 +95,7 @@ public class TodoRepositoryHibernete implements TodoRepository {
             LocalDate today = LocalDate.now();
             
             Query<Todo> query = session.createQuery(
-                    "CREATE Todo WHERE dueDate < :today and status != 'COMPLETED'",
+                    "FROM Todo WHERE dueDate < :today AND status != 'COMPLETED' AND status != 'OVERDUE'",
                     Todo.class
             );
             
@@ -108,7 +108,7 @@ public class TodoRepositoryHibernete implements TodoRepository {
             
             tx.commit();
         } catch (Exception e) {
-            if(tx != null) tx.commit();
+            if(tx != null) tx.rollback();
             e.printStackTrace();
         }
     }

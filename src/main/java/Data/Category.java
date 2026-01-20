@@ -4,6 +4,9 @@
  */
 package Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author admin
@@ -16,6 +19,8 @@ public class Category {
     private String description;
     
     private User user;
+
+    private Set<Todo> todos = new HashSet<>();
 
     // REQUIRED by Hibernate
     public Category() {}
@@ -60,5 +65,13 @@ public class Category {
     public void setUser(User user) {
         this.user = user;
     }
-     
+
+    public Set<Todo> getTodos() {
+        return todos;
+    }
+
+    public void setTodos(Set<Todo> todos) {
+        this.todos = todos;
+    }
+
 }

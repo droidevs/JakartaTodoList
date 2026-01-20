@@ -110,7 +110,7 @@ public class TodoRepositoryJdbc implements TodoRepository {
             } else {
                 ps.setNull(4, Types.DATE);
             }
-            ps.setInt(3, todo.getId());
+            ps.setInt(5, todo.getId());
             ps.executeUpdate();
 
         } catch (SQLException e) {

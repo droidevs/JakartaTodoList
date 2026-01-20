@@ -59,7 +59,7 @@ public class CategoryRepositoryHibernete implements CategoryRepository {
     public List<Category> findAll(int userId) {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery(
-                    "FROM category WHERE c.user.id = :userId",
+                    "FROM Category c WHERE c.user.id = :userId",
                     Category.class
             ).setParameter("userId", userId)
                     .list();
@@ -99,15 +99,15 @@ public class CategoryRepositoryHibernete implements CategoryRepository {
     @Override
     public boolean existsByNameAndUser(String name, int userId) {
         try (Session session = sessionFactory.openSession()) {
-            var d = session.createQuery(
-                    "FROM categories WHERE name = :name AND user_id = :userId",
-                    Boolean.class
+            Long count = session.createQuery(
+                    "SELECT COUNT(c) FROM Category c WHERE c.name = :name AND c.user.id = :userId",
+                    Long.class
             )
                     .setParameter("name", name)
                     .setParameter("userId", userId)
                     .uniqueResult();
 
-            return d != null;
+            return count != null && count > 0;
         }
     }
 

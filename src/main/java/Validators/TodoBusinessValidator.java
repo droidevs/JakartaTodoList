@@ -50,7 +50,7 @@ public class TodoBusinessValidator {
         }
         
         if (oldStatus == TodoStatus.OVERDUE &&
-            newStatus == TodoStatus.NEW || newStatus == TodoStatus.IN_PROGRESS) {
+            (newStatus == TodoStatus.NEW || newStatus == TodoStatus.IN_PROGRESS)) {
             throw new ActionDeniedException();
         }
     }

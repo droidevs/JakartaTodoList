@@ -14,9 +14,7 @@ import Models.RequestFactory;
 import Paths.BasePaths;
 import Paths.HttpMethod;
 import Paths.Paths;
-import static Paths.Route.AUTH_LOGIN;
-import static Paths.Route.AUTH_LOGOUT;
-import static Paths.Route.AUTH_REGISTER;
+import Paths.Route;
 import Paths.Router;
 import Services.AuthService;
 import Services.impl.AuthServiceImpl;
@@ -94,11 +92,11 @@ public class AuthServlet extends HttpServlet {
 
             switch (match.getRoute()) {
 
-                case AUTH_LOGIN:
+                case AUTH_LOGIN_POST:
                     login(req, resp);
                     break;
 
-                case AUTH_REGISTER:
+                case AUTH_REGISTER_POST:
                     register(req, resp);
                     break;
 

@@ -5,8 +5,8 @@
 package Data;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -24,8 +24,8 @@ public class User {
     private String passwordHash;
 
     
-    private List<Todo> todos = new ArrayList<>();
-    
+    private Set<Todo> todos = new HashSet<>();
+
     public int getId() {
         return id;
     }
@@ -58,5 +58,13 @@ public class User {
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
-    
+
+    public Set<Todo> getTodos() {
+        return todos;
+    }
+
+    public void setTodos(Set<Todo> todos) {
+        this.todos = todos;
+    }
+
 }

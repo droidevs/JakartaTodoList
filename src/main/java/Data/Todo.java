@@ -89,7 +89,7 @@ public class Todo {
     }
 
     public TodoStatus getStatus() {
-        return TodoStatus.valueOf(status);
+        return status != null ? TodoStatus.valueOf(status) : null;
     }
 
     public LocalDate getDueDate() {

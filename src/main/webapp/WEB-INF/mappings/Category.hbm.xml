@@ -18,9 +18,8 @@
         <property name="name" 
                   column="name" 
                   type="string" 
-                  not-null="true" 
-                  unique="true" />
-        
+                  not-null="true" />
+
         <property name="color" 
                   column="color" 
                   type="string" 
@@ -32,11 +31,11 @@
                   type="string" 
                   length="300" />
         
-        <select name="todos" inverse="true" lazy="true">
+        <set name="todos" inverse="true" lazy="true">
             <key column="category_id" />
             <one-to-many class="Todo" />
-        </select>
-        
+        </set>
+
         <many-to-one name="user" 
                      class="User" 
                      column="user_id" 

@@ -43,6 +43,7 @@ public class UserRepositoryHibernete implements UserRepository {
         try(Session session = HiberneteUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
             session.persist(user);
+            tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();

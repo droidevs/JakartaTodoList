@@ -62,7 +62,7 @@ public class CategoryServlet extends HttpServlet {
                     showCategory(req, resp, match);
                     break;
 
-                case CATEGORIES_CREATE:
+                case CATEGORIES_CREATE_FORM:
                     showCreateForm(req, resp);
                     break;
 

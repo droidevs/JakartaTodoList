@@ -5,6 +5,7 @@
 package Validators;
 
 import jakarta.validation.ConstraintViolation;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,12 +28,12 @@ public class ValidationUtils {
 
     public static <T> List<String> toMessageList(Set<ConstraintViolation<?>> violations) {
         if (violations == null) {
-            return List.of();
+            return Collections.emptyList();
         }
 
         return violations.stream()
                 .map(v -> v.getPropertyPath() + " " + v.getMessage())
-                .toList();
+                .collect(Collectors.toList());
     }
 
 }
