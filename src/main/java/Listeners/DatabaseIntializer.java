@@ -4,7 +4,7 @@
  */
 package Listeners;
 
-import Utils.DatabaseUtil;
+import Utils.HiberneteUtil;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.stream.Collectors;
+import org.hibernate.Session;
 
 /**
  *
@@ -33,22 +34,29 @@ public class DatabaseIntializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         String dbType = getEnvOrDefault("DB_TYPE", "postgres");
 
-        try (Connection conn = DatabaseUtil.getConnection()) {
-            Statement stmt = conn.createStatement();
+        Session session = null;
+        try {
+            session = HiberneteUtil.getSessionFactory().openSession();
+            final String resourcePath = "sql/01-init.sql";
+            final boolean isSqlServer = "sqlserver".equalsIgnoreCase(dbType);
+            final String chosenResource = isSqlServer ? "sql/02-azure-init.sql" : "sql/01-init.sql";
 
-            if ("sqlserver".equalsIgnoreCase(dbType)) {
-                // Load Azure SQL script from resources
-                executeSqlScript(stmt, "sql/02-azure-init.sql", true);
-            } else {
-                // Load PostgreSQL script from resources
-                executeSqlScript(stmt, "sql/01-init.sql", false);
-            }
+            session.doWork((Connection conn) -> {
+                try (Statement stmt = conn.createStatement()) {
+                    // Load and execute SQL using existing helper
+                    executeSqlScript(stmt, chosenResource, isSqlServer);
+                }
+            });
 
             System.out.println("Database initialized successfully!");
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("Database initialization failed: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 

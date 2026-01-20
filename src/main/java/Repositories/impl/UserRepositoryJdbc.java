@@ -34,10 +34,10 @@ public class UserRepositoryJdbc implements UserRepository {
         String sql = "SELECT * FROM users WHERE username = ?";
         try(Connection conn = DatabaseUtil.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
-            
+
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 return mapUser(rs);
             }
@@ -52,10 +52,10 @@ public class UserRepositoryJdbc implements UserRepository {
         String sql = "SELECT * FROM users WHERE id = ?";
         try(Connection conn = DatabaseUtil.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
-            
+
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            
+
             if (rs.next()) {
                 return mapUser(rs);
             }
@@ -68,15 +68,15 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public void save(User user) {
         String sql = "INSERT INTO users (username, full_name, password) VALUES (?,?,?)";
-        
+
         try(Connection conn = DatabaseUtil.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            
+
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getFullName());
             ps.setString(3, user.getPasswordHash());
             ps.executeUpdate();
-            
+
             ResultSet keys = ps.getGeneratedKeys();
             if (keys.next()) {
                 user.setId(keys.getInt(1));

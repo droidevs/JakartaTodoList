@@ -11,7 +11,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -26,18 +25,15 @@ public class HomeFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) sr;
         HttpServletResponse resp = (HttpServletResponse) sr1;
 
-        Boolean isLoggedIn = SessionUtils.isAuthenticated(req);
+        boolean isLoggedIn = SessionUtils.isAuthenticated(req);
 
         String path = req.getRequestURI().substring(req.getContextPath().length());
 
-        System.out.println(path);
-
         if (path.equals("/") || path.isEmpty()) {
-            System.out.println(true);
             // The request is for the root of your web app
             if (isLoggedIn) {
                 // User is signed in redirect to todos
-                resp.sendRedirect(req.getContextPath() + Api.TODOS_LIST);
+                resp.sendRedirect(req.getContextPath() + "/todos"); // Updated to use the correct path
                 return;
             }
         }
