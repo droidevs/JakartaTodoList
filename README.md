@@ -165,22 +165,22 @@ Below is a visual gallery of the application's screens (top) followed by a detai
 Gallery (click any thumbnail to view full image):
 
 <div style="display:flex;flex-wrap:wrap;gap:12px">
-  <a href="docs/shots/home.png"><img src="docs/shots/home.png" alt="Home" width="260" /></a>
-  <a href="docs/shots/todos_list.png"><img src="docs/shots/todos_list.png" alt="Todos list" width="260" /></a>
-  <a href="docs/shots/todos_list_empty.png"><img src="docs/shots/todos_list_empty.png" alt="Todos list (empty)" width="260" /></a>
-  <a href="docs/shots/create_todo_form_top.png"><img src="docs/shots/create_todo_form_top.png" alt="Create Todo (top)" width="260" /></a>
-  <a href="docs/shots/create_todo_form_bottom.png"><img src="docs/shots/create_todo_form_bottom.png" alt="Create Todo (bottom)" width="260" /></a>
-  <a href="docs/shots/todo_edit_top.png"><img src="docs/shots/todo_edit_top.png" alt="Edit Todo (top)" width="260" /></a>
-  <a href="docs/shots/todo_edit_bottom.png"><img src="docs/shots/todo_edit_bottom.png" alt="Edit Todo (bottom)" width="260" /></a>
-  <a href="docs/shots/view_todo.png"><img src="docs/shots/view_todo.png" alt="View Todo" width="260" /></a>
-  <a href="docs/shots/categories_list.png"><img src="docs/shots/categories_list.png" alt="Categories list" width="260" /></a>
-  <a href="docs/shots/categories_list_empty.png"><img src="docs/shots/categories_list_empty.png" alt="Categories empty" width="260" /></a>
-  <a href="docs/shots/category_view.png"><img src="docs/shots/category_view.png" alt="Category view" width="260" /></a>
-  <a href="docs/shots/category_view_empty.png"><img src="docs/shots/category_view_empty.png" alt="Category view (empty)" width="260" /></a>
-  <a href="docs/shots/category_create.png"><img src="docs/shots/category_create.png" alt="Create Category" width="260" /></a>
-  <a href="docs/shots/edit_category.png"><img src="docs/shots/edit_category.png" alt="Edit Category" width="260" /></a>
-  <a href="docs/shots/login.png"><img src="docs/shots/login.png" alt="Login" width="260" /></a>
-  <a href="docs/shots/register.png"><img src="docs/shots/register.png" alt="Register" width="260" /></a>
+  <a href="../docs/shots/home.png"><img src="../docs/shots/home.png" alt="Home" width="260" /></a>
+  <a href="../docs/shots/todos_list.png"><img src="../docs/shots/todos_list.png" alt="Todos list" width="260" /></a>
+  <a href="../docs/shots/todos_list_empty.png"><img src="../docs/shots/todos_list_empty.png" alt="Todos list (empty)" width="260" /></a>
+  <a href="../docs/shots/create_todo_form_top.png"><img src="../docs/shots/create_todo_form_top.png" alt="Create Todo (top)" width="260" /></a>
+  <a href="../docs/shots/create_todo_form_bottom.png"><img src="../docs/shots/create_todo_form_bottom.png" alt="Create Todo (bottom)" width="260" /></a>
+  <a href="../docs/shots/todo_edit_top.png"><img src="../docs/shots/todo_edit_top.png" alt="Edit Todo (top)" width="260" /></a>
+  <a href="../docs/shots/todo_edit_bottom.png"><img src="../docs/shots/todo_edit_bottom.png" alt="Edit Todo (bottom)" width="260" /></a>
+  <a href="../docs/shots/view_todo.png"><img src="../docs/shots/view_todo.png" alt="View Todo" width="260" /></a>
+  <a href="../docs/shots/categories_list.png"><img src="../docs/shots/categories_list.png" alt="Categories list" width="260" /></a>
+  <a href="../docs/shots/categories_list_empty.png"><img src="../docs/shots/categories_list_empty.png" alt="Categories empty" width="260" /></a>
+  <a href="../docs/shots/category_view.png"><img src="../docs/shots/category_view.png" alt="Category view" width="260" /></a>
+  <a href="../docs/shots/category_view_empty.png"><img src="../docs/shots/category_view_empty.png" alt="Category view (empty)" width="260" /></a>
+  <a href="../docs/shots/category_create.png"><img src="../docs/shots/category_create.png" alt="Create Category" width="260" /></a>
+  <a href="../docs/shots/edit_category.png"><img src="../docs/shots/edit_category.png" alt="Edit Category" width="260" /></a>
+  <a href="../docs/shots/login.png"><img src="../docs/shots/login.png" alt="Login" width="260" /></a>
+  <a href="../docs/shots/register.png"><img src="../docs/shots/register.png" alt="Register" width="260" /></a>
 </div>
 
 ---
