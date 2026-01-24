@@ -27,7 +27,8 @@
     </div>
 
     <%
-        List<Todo> todos = (List<Todo>) request.getAttribute("todos");
+        Object todosObj = request.getAttribute("todos");
+        java.util.List<Todo> todos = (todosObj instanceof java.util.List) ? (java.util.List<Todo>) todosObj : java.util.Collections.emptyList();
     %>
 
     <% if (todos == null || todos.isEmpty()) { %>

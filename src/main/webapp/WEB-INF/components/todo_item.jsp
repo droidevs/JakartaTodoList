@@ -11,15 +11,25 @@
 <%@page import="Paths.Api"%>
 
 <%
+    // Require the caller to provide the Todo as a request attribute `todo`.
     Todo todo = (Todo) request.getAttribute("todo");
-    Category category = todo.getCategory();
+    if (todo == null) {
+%>
+<div class="todo-card shadow-sm mb-3 p-3">
+    <div class="text-muted">(todo not available)</div>
+</div>
+<%
+        return;
+    }
 
+    Category category = todo.getCategory();
     String categoryName  = category != null ? category.getName() : "Uncategorized";
-    // Use a central default color when todo has no category
     String categoryColor = category != null ? category.getColor() : Defaults.NO_CATEGORY_COLOR;
-    // allow caller to suppress showing the category (e.g., when rendering inside a category view)
-    Boolean suppressCategory = (Boolean) request.getAttribute("suppressCategory");
-    if (suppressCategory == null) suppressCategory = false;
+
+    // suppressCategory: accept as attribute or param (attribute wins)
+    Object sa = request.getAttribute("suppressCategory");
+    String supParam = sa != null ? sa.toString() : request.getParameter("suppressCategory");
+    boolean suppressCategory = ("true".equalsIgnoreCase(supParam) || "1".equals(supParam));
 %>
 
 <div class="todo-card shadow-sm mb-3"
@@ -34,6 +44,9 @@
     <!-- HEADER -->
     <div class="todo-header">
         <h5 class="todo-title"><%= todo.getTitle() %></h5>
+        <% if (!suppressCategory) { %>
+        <div class="small text-muted">Category: <%= categoryName %></div>
+        <% } %>
         <span class="badge
             <%= todo.getStatus() == TodoStatus.NEW ? "bg-primary" :
                 todo.getStatus() == TodoStatus.IN_PROGRESS ? "bg-warning" :

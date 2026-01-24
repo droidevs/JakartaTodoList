@@ -14,7 +14,8 @@
 
 <%
     Category category = (Category) request.getAttribute("category");
-    List<Todo> todos = (List<Todo>) request.getAttribute("todos");
+    Object todosObj = request.getAttribute("todos");
+    java.util.List<Todo> todos = (todosObj instanceof java.util.List) ? (java.util.List<Todo>) todosObj : java.util.Collections.emptyList();
 %>
 
 <jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.HEADER) %>">
@@ -40,7 +41,7 @@
         <div class="d-flex align-items-center gap-2">
 
             <!-- EDIT -->
-            <a href="<%= request.getContextPath() + Api.CATEGORIES_UPDATE(category.getId())%>"
+            <a href="<%= request.getContextPath() + Api.CATEGORY_EDIT_FORM(category.getId()).getPath()%>"
                class="btn btn-outline-secondary btn-sm rounded-circle"
                title="Edit category">
                 <i class="bi bi-pencil"></i>
@@ -65,7 +66,7 @@
 
 <!-- TODOS -->
 <%
-    if (todos == null || todos.isEmpty()) {
+    if (todos.isEmpty()) {
 %>
 <div class="empty-state">
     <h4>No todos in this category</h4>
@@ -84,7 +85,6 @@
     <div class="todo-wrapper">
         <%
             request.setAttribute("todo", todo);
-            // suppress category label inside a category page
             request.setAttribute("suppressCategory", true);
         %>
         <jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.TODO_ITEM) %>"/>

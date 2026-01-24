@@ -18,6 +18,7 @@ import Services.TodoService;
 import Services.impl.TodoServiceImpl2;
 import Utils.ExceptionHandlerUtil;
 import Utils.ServletUtils;
+import Utils.SessionUtils;
 import View.ViewDispatcher;
 import View.ViewResolver;
 import jakarta.servlet.ServletException;
@@ -212,7 +213,7 @@ public class CategoryServlet extends HttpServlet {
             Router.RouteMatch match)
             throws Exception {
 
-        Integer userId = (Integer) req.getSession().getAttribute("userId");
+        Integer userId = SessionUtils.getLoggedUserId(req);
         Integer id = Integer.valueOf(match.getParams().get(PathParams.Categories.ID));
 
         categoryService.update(
@@ -239,12 +240,12 @@ public class CategoryServlet extends HttpServlet {
     }
 
     private void showEditForm(HttpServletRequest req, HttpServletResponse resp, Router.RouteMatch match) throws ServletException, IOException {
-        Integer userId = (Integer) req.getSession().getAttribute("userId");
+        Integer userId = SessionUtils.getLoggedUserId(req);
         Integer id = Integer.valueOf(match.getParams().get(PathParams.Categories.ID));
 
         Category category = categoryService.get(
                 RequestFactory.getCategory(id),
-                userId
+                userId != null ? userId : -1
         );
 
         req.setAttribute("category", category);
