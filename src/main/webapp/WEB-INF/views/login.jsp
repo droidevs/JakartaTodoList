@@ -5,13 +5,14 @@
 --%>
 
 
-<%@page import="View.ViewResolver"%>
+<%@ page import="View.ComponentResolver" %>
+<%@ page import="Paths.Paths" %>
 
-<%@ include file="<%= ViewResolver.resolve(ComponentResolver.HEADER) %>"%>
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.HEADER) %>" />
 
 
 <h2>Login</h2>
-<form action="login" method="post">
+<form action="<%= request.getContextPath() + Paths.Auth.LOGIN() %>" method="post">
     <div class="mb-3">
         <label>Username</label>
         <input type="text" name="username" class="form-control" required>
@@ -27,5 +28,5 @@
     <div class="alert alert-danger mt-3"><%= error %></div>
 <% } %>
 
-<%@ include file="<%= ViewResolver.resolve(ComponentResolver.FOOTER) %>"%>
 
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.FOOTER) %>" />

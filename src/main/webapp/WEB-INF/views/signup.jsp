@@ -4,24 +4,32 @@
     Author     : Mouad OUMOUS
 --%>
 
-<%@page import="View.ViewResolver"%>
+<%@ page import="View.ComponentResolver" %>
+<%@ page import="Paths.Paths" %>
+<%@ page import="Paths.BasePaths" %>
+<%@ page import="Paths.PathParams" %>
+<%@ page import="Paths.Api" %>
 
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.HEADER) %>" />
 
 
 <h2>Create an Account</h2>
-<form action="signup" method="post">
+<form action="<%= request.getContextPath() + Paths.Auth.REGISTER() %>" method="post">
     <div class="mb-3">
-        <label>Full Name</label>
-        <input type="text" name="fullName" class="form-control" required>
+        <label for="fullName">Full Name</label>
+        <input id="fullName" type="text" name="fullName" class="form-control" required>
     </div>
     <div class="mb-3">
-        <label>Username</label>
-        <input type="text" name="username" class="form-control" required>
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" class="form-control" required>
     </div>
     <div class="mb-3">
-        <label>Password</label>
-        <input type="password" name="password" class="form-control" required>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="confirmPassword">Confirm Password</label>
+        <input id="confirmPassword" type="password" name="confirmPassword" class="form-control" required>
     </div>
     <input type="submit" class="btn btn-primary" value="Sign Up">
 </form>
@@ -32,4 +40,4 @@
 <% } %>
 
 
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.FOOTER) %>" />

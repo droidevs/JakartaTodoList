@@ -8,7 +8,8 @@
 
 <%@page import="View.ViewResolver"%>
 <%@page import="Data.Todo"%>
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
+<%@ page import="View.ComponentResolver" %>
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.HEADER) %>" />
 
 <h3>View Todo</h3>
 
@@ -23,4 +24,4 @@
         <a href="${request.getContextPath()+"/todos"}" class="btn btn-secondary">Back</a>
     </div>
 </div>
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.FOOTER) %>" />

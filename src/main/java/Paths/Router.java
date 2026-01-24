@@ -4,11 +4,8 @@
  */
 package Paths;
 
-import Errors.ErrorUtils;
-import Exceptions.ExceptionUtils;
 import Exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,22 +19,24 @@ public final class Router {
     }
 
     public Router.RouteMatch matchRoute(HttpServletRequest req) {
-        String path = req.getPathInfo(); // gets path after servlet mapping
+        // Use the full application-relative path so we can match Route.getPath() values
+        // which are absolute (start with '/'). This avoids issues caused by servlet
+        // mapping and req.getPathInfo().
+        String requestUri = req.getRequestURI(); // e.g. /app/todos/123
+        String context = req.getContextPath();   // e.g. /app
+        String path = requestUri.substring(context.length()); // e.g. /todos/123 or /
         HttpMethod method = HttpMethod.valueOf(req.getMethod().toUpperCase());
 
         Router.RouteMatch match = Router.match(path, method);
         if (match == null) {
-            // If no route matches, send 404
-            try {
-                throw new ResourceNotFoundException();
-            } catch (Exception e) {
-                // todo : handle exception
-            }
+            // No route matches -> propagate resource not found to be handled by global handler
+            throw new ResourceNotFoundException();
         }
         return match;
     }
 
     public static RouteMatch match(String path, HttpMethod method) {
+        if (path == null) return null;
         for (Route route : Route.values()) {
             if (route.getMethod() != method) {
                 continue;
@@ -53,8 +52,19 @@ public final class Router {
 
     // Returns map of parameter name -> value if matches, else null
     private static Map<String, String> extractParams(String pattern, String path) {
-        String[] patternParts = pattern.split("/");
-        String[] pathParts = path.split("/");
+        if (pattern == null || path == null) return null;
+
+        // Normalize: remove leading and trailing slashes so split produces comparable arrays
+        String pPattern = normalizePath(pattern);
+        String pPath = normalizePath(path);
+
+        // Special case: both are empty => match root
+        if (pPattern.isEmpty() && pPath.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        String[] patternParts = pPattern.isEmpty() ? new String[0] : pPattern.split("/");
+        String[] pathParts = pPath.isEmpty() ? new String[0] : pPath.split("/");
 
         if (patternParts.length != pathParts.length) {
             return null;
@@ -71,6 +81,20 @@ public final class Router {
             }
         }
         return params;
+    }
+
+    private static String normalizePath(String s) {
+        if (s == null) return "";
+        // ensure we operate on the path part only
+        String t = s;
+        // Remove query if present (defensive)
+        int q = t.indexOf('?');
+        if (q >= 0) t = t.substring(0, q);
+        // Strip leading slash(es)
+        while (t.startsWith("/")) t = t.substring(1);
+        // Strip trailing slash(es)
+        while (t.endsWith("/")) t = t.substring(0, t.length() - 1);
+        return t;
     }
 
     public static class RouteMatch {

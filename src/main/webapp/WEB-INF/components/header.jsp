@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : header
     Created on : Dec 24, 2025, 4:49:56 PM
     Author     : Mouad OUMOUS
@@ -11,11 +11,12 @@
 <%@ page session="true" %>
 
 <%@ page import="java.util.*" %>
+<%@ page import="Paths.Paths" %>
 
 <%
     String pageTitle = request.getParameter("title");
     String pageCss = request.getParameter("css");
-    
+
     if (pageTitle == null) {
         pageTitle = "Todo App";
     }
@@ -32,14 +33,12 @@
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-        <link rel="stylesheet"
-              href="<%= request.getContextPath() + pageCss%>">
-        
+        <%-- Only include page-specific CSS when provided --%>
+        <% if (pageCss != null && !pageCss.isEmpty()) { %>
+            <link rel="stylesheet" href="<%= request.getContextPath() + pageCss %>">
+        <% } %>
+
         <style>
-
-            
-
-            
 
         </style>
     </head>
@@ -47,10 +46,10 @@
 
         <%
             String username = (String) SessionUtils.getSessionUserName(session);
-        %>    
+        %>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
             <div class="container">
-                <a class="navbar-brand" href="todos">Todo App</a>
+                <a class="navbar-brand" href="<%= request.getContextPath() + Paths.Todos.LIST() %>">Todo App</a>
 
                 <div class="collapse navbar-collapse justify-content-end">
                     <ul class="navbar-nav">
@@ -61,14 +60,14 @@
                             </span>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm" href="logout" 
+                            <a class="btn btn-outline-light btn-sm" href="<%= request.getContextPath() + Paths.Auth.LOGOUT() %>"
                                onclick="return confirm('Are you sure you want to logout?');">
                                 Logout
                             </a>
                         </li>
                         <% } else { %>
                         <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm" href="login.jsp">Login</a>
+                            <a class="btn btn-outline-light btn-sm" href="<%= request.getContextPath() + Paths.Auth.LOGIN() %>">Login</a>
                         </li>
                         <% }%>
                     </ul>

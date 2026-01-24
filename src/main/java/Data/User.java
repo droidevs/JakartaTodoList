@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class User {
     
-    private int id;
+    private Integer id;
     
     private String username;
     
@@ -26,7 +26,7 @@ public class User {
     
     private Set<Todo> todos = new HashSet<>();
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -42,7 +42,7 @@ public class User {
         return passwordHash;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
    

@@ -84,31 +84,36 @@ public class TodoServiceImpl2 implements TodoService {
             ValidationException,
             ResourceAccessDeniedException {
 
+        System.out.println("TodoServiceImpl2.createTodo: incoming request=" + request + " sessionUserId=" + sessionUserId);
+
         RequestValidator.validate(request);
 
         validateDueDate(request.getDueDate());
 
         User user = userRepository.findById(sessionUserId);
+        System.out.println("TodoServiceImpl2.createTodo: found user=" + (user == null ? "null" : user.getId()));
         if (user == null) {
             throw new ResourceAccessDeniedException();
         }
 
-        /*
-        Category category = categoryRepository.findById(request.getCategoryId());
-         */
-        Category category
-                = categoryRepository.findByIdAndUser(
-                        request.getCategoryId(),
-                        sessionUserId
-                );
-        
-        if (category == null) {
-            throw new ResourceAccessDeniedException();
+        Category category = null;
+        if (request.getCategoryId() != null) {
+            category = categoryRepository.findByIdAndUser(
+                    request.getCategoryId(),
+                    sessionUserId
+            );
+            System.out.println("TodoServiceImpl2.createTodo: looked up category id=" + request.getCategoryId() + " result=" + (category == null ? "null" : category.getId()));
+            if (category == null) {
+                // if provided categoryId is invalid or not owned by user, treat as no category instead of denying
+                System.out.println("TodoServiceImpl2.createTodo: provided categoryId not found or not owned by user, ignoring category");
+            }
+        } else {
+            System.out.println("TodoServiceImpl2.createTodo: no categoryId provided, creating todo without category");
         }
 
         Todo todo = todoMapper.toEntity(request, user, category);
 
-        //TodoValidator.validate(todo);
+        // valiate todot
         todoRepository.save(todo);
         return todo;
     }
@@ -153,6 +158,20 @@ public class TodoServiceImpl2 implements TodoService {
         }
 
         todoMapper.updateEntity(todo, request);
+
+        // Handle category change from edit form. If categoryId is null -> remove category.
+        if (request.getCategoryId() == null) {
+            todo.setCategory(null);
+        } else {
+            Category newCategory = categoryRepository.findByIdAndUser(request.getCategoryId(), sessionUserId);
+            if (newCategory != null) {
+                todo.setCategory(newCategory);
+            } else {
+                // Provided category is invalid/not owned by user - ignore change (leave as null)
+                System.out.println("TodoServiceImpl2.updateTodo: provided categoryId not found or not owned by user, setting no category");
+                todo.setCategory(null);
+            }
+        }
 
         todo.setStatus(request.getStatus());
 

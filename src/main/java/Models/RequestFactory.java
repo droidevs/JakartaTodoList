@@ -7,8 +7,8 @@ package Models;
 import Constants.TodoStatus;
 import static Utils.Utils.parseDate;
 import static Utils.Utils.parseEnum;
+import static Utils.Utils.parseInt;
 import jakarta.servlet.http.HttpServletRequest;
-import static java.lang.Integer.parseInt;
 import java.time.LocalDate;
 
 /**
@@ -23,17 +23,25 @@ public final class RequestFactory {
     public static CreateTodoRequest createTodo(HttpServletRequest req) {
 
         String dueDateStr = req.getParameter(TodoParams.DUE_DATE);
-        
+        String categoryIdStr = req.getParameter(TodoParams.CATEGORY_ID);
+
         LocalDate dueDate = (dueDateStr != null && !dueDateStr.isBlank())
                 ? parseDate(dueDateStr)
                 : null;
         
+        Integer categoryId = (categoryIdStr != null && !categoryIdStr.isBlank()) ? Integer.valueOf(categoryIdStr) : null;
+
+        // parse status with default to NEW if missing/invalid
+        String statusStr = req.getParameter(TodoParams.STATUS);
+        Constants.TodoStatus status = parseEnum(Constants.TodoStatus.class, statusStr);
+        if (status == null) status = Constants.TodoStatus.NEW;
+
         return new CreateTodoRequest(
                 req.getParameter(TodoParams.TITLE),
                 req.getParameter(TodoParams.DESCRIPTION),
-                parseEnum(TodoStatus.class, req.getParameter(TodoParams.STATUS)),
+                status,
                 dueDate,
-                parseInt(req.getParameter(TodoParams.CATEGORY_ID))
+                categoryId
         );
     }
 

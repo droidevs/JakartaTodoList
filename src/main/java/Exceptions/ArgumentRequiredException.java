@@ -13,5 +13,9 @@ public class ArgumentRequiredException extends RuntimeException{
     public ArgumentRequiredException() {
         super("Argument required");
     }
-    
+
+    public ArgumentRequiredException(String message) {
+        super(message);
+    }
+
 }

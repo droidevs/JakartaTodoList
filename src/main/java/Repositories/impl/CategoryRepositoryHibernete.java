@@ -35,8 +35,7 @@ public class CategoryRepositoryHibernete implements CategoryRepository {
     public Category findByIdAndUser(int id, int userId) {
         try (Session s = sessionFactory.openSession()) {
             return s.createQuery(
-                    "FROM Category c\n"
-                    + "WHERE c.id = :id AND c.user.id = :userId",
+                    "FROM Data.Category c WHERE c.id = :id AND c.user.id = :userId",
                     Category.class
             )
                     .setParameter("id", id)

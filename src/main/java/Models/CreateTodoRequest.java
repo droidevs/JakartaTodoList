@@ -32,8 +32,6 @@ public class CreateTodoRequest {
     @FutureOrPresent(message = "Due date must be today or in the future")
     LocalDate dueDate;
     
-    @NotNull
-    @Positive
     private Integer categoryId;
 
     public CreateTodoRequest() {
@@ -97,4 +95,15 @@ public class CreateTodoRequest {
         this.categoryId = categoryId;
     }
     
+    @Override
+    public String toString() {
+        return "CreateTodoRequest{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", dueDate=" + dueDate +
+                ", categoryId=" + categoryId +
+                '}';
+    }
+
 }

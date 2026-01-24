@@ -11,8 +11,12 @@
 
         <property name="title" column="title" not-null="true" />
         <property name="description" column="description" />
-        <property name="status" column="status" />
-        <property name="dueDate" column="due_date" />
+        <!-- Use field access for status so Hibernate reads/writes the underlying String field
+             (the Java getter/setter expose TodoStatus enum while the field is a String) -->
+        <property name="status" column="status" access="field" />
+        <!-- Ensure dueDate is mapped to SQL DATE (LocalDate) -->
+        <!-- use Hibernate's LocalDateType to map java.time.LocalDate -> SQL DATE -->
+        <property name="dueDate" column="due_date" type="org.hibernate.type.LocalDateType" />
         <many-to-one name="user" class="User" column="user_id" not-null="true"/>
         <many-to-one name="category" class="Category" column="category_id" not-null="false" fetch="select" />
     </class>

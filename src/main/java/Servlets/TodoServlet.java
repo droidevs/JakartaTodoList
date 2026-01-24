@@ -32,7 +32,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -61,23 +60,30 @@ public class TodoServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
+            System.out.println("TodoServlet: handling GET " + req.getRequestURI());
             Router.RouteMatch match = router.matchRoute(req);
+
+            System.out.println("TodoServlet: matched route=" + match.getRoute());
 
             switch (match.getRoute()) {
 
                 case TODOS_LIST:
+                    System.out.println("TodoServlet: listing todos");
                     listTodos(req, resp);
                     break;
 
                 case TODOS_GET_ONE:
+                    System.out.println("TodoServlet: viewing single todo");
                     viewTodo(req, resp, match);
                     break;
 
                 case TODOS_CREATE_FORM:
+                    System.out.println("TodoServlet: showing create form");
                     showCreateForm(req, resp);
                     break;
 
                 case TODOS_EDIT_FORM:
+                    System.out.println("TodoServlet: showing edit form");
                     showEditForm(req, resp, match);
                     break;
 
@@ -86,11 +92,9 @@ public class TodoServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            ExceptionHandlerUtil.handle(req, resp, e, ViewResolver.TODOS);
+            ExceptionHandlerUtil.handle(req, resp, e, Paths.Todos.LIST());
         }
     }
-
-    // =====================
     // POST
     // =====================
     @Override
@@ -98,19 +102,35 @@ public class TodoServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
+            System.out.println("TodoServlet: handling POST " + req.getRequestURI());
             Router.RouteMatch match = router.matchRoute(req);
+
+            System.out.println("TodoServlet: matched route=" + match.getRoute());
 
             switch (match.getRoute()) {
 
                 case TODOS_CREATE:
-                    createTodo(req, resp);
+                    System.out.println("TodoServlet: create todo");
+                    try {
+                        createTodo(req, resp);
+                    } catch (ValidationException | ArgumentRequiredException ex) {
+                        System.out.println("TodoServlet: create validation failed: " + ex.getMessage());
+                        // reload categories and show form with error
+                        var userId = SessionUtils.getLoggedUserId(req);
+                        List<Category> categories = categoryService.getAll(userId);
+                        req.setAttribute("categories", categories);
+                        req.setAttribute("error", ex.getMessage());
+                        ViewDispatcher.dispatch(req, resp, ViewResolver.TODO_FORM);
+                    }
                     break;
 
                 case TODOS_UPDATE:
+                    System.out.println("TodoServlet: update todo");
                     updateTodo(req, resp, match);
                     break;
 
                 case TODOS_DELETE:
+                    System.out.println("TodoServlet: delete todo");
                     deleteTodo(req, resp, match);
                     break;
 
@@ -129,7 +149,7 @@ public class TodoServlet extends HttpServlet {
     private void listTodos(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
 
-        Integer userId = (Integer) req.getSession().getAttribute("userId");
+        int userId = SessionUtils.getLoggedUserId(req);
 
         todoService.markOverdueTodos(userId);
         List<Todo> todos = todoService.getTodos(userId);
@@ -143,9 +163,9 @@ public class TodoServlet extends HttpServlet {
             throws IOException, ServletException {
 
         String idStr = match.getParams().get(PathParams.Todos.ID);
-        Integer id = Integer.valueOf(idStr);
+        int id = Integer.parseInt(idStr);
 
-        Integer userId = (Integer) req.getSession().getAttribute("userId");
+        int userId = SessionUtils.getLoggedUserId(req);
 
         Todo todo = todoService.getTodo(new GetTodoRequest(id), userId);
         req.setAttribute("todo", todo);
@@ -156,13 +176,24 @@ public class TodoServlet extends HttpServlet {
     private void showCreateForm(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        var userId = SessionUtils.getLoggedUserId(req);
-        
-        List<Category> categories = categoryService.getAll(userId);
-        
+        Integer userId = SessionUtils.getLoggedUserId(req);
+
+        // Do not force categories in create form: if categoryId query param is provided we keep it hidden,
+        // otherwise load categories so the user can choose a category during creation.
         req.setAttribute("mode", "create");
-        req.setAttribute("categories", categories);
-        
+        String categoryIdParam = req.getParameter("categoryId");
+        if (categoryIdParam != null && !categoryIdParam.isBlank()) {
+            req.setAttribute("categoryId", categoryIdParam);
+        } else {
+            // load user's categories so create form can offer a selector
+            if (userId != null) {
+                List<Category> categories = categoryService.getAll(userId);
+                req.setAttribute("categories", categories);
+            } else {
+                req.setAttribute("categories", java.util.Collections.emptyList());
+            }
+        }
+
         ViewDispatcher.dispatch(req, resp, ViewResolver.TODO_FORM);
     }
 
@@ -171,14 +202,16 @@ public class TodoServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String idStr = match.getParams().get(PathParams.Todos.ID);
-        Integer id = Integer.valueOf(idStr);
+        int id = Integer.parseInt(idStr);
 
-        Integer userId = (Integer) req.getSession().getAttribute("userId");
+        int userId = SessionUtils.getLoggedUserId(req);
 
         Todo todo = todoService.getTodo(new GetTodoRequest(id), userId);
 
         req.setAttribute("todo", todo);
-        req.setAttribute("mode", "edit");
+        // Load user's categories so the edit form can present the category select
+        List<Category> categories = categoryService.getAll(userId);
+        req.setAttribute("categories", categories);
 
         ViewDispatcher.dispatch(req, resp, ViewResolver.TODO_FORM);
     }
@@ -186,12 +219,29 @@ public class TodoServlet extends HttpServlet {
     private void createTodo(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, InvalidDueDateException, ArgumentRequiredException, ValidationException {
 
-        Integer userId = (Integer) req.getSession().getAttribute("userId");
+        Integer userId = SessionUtils.getLoggedUserId(req);
+
+        if (userId == null) {
+            System.out.println("TodoServlet.createTodo: no logged user, redirecting to login");
+            resp.sendRedirect(req.getContextPath() + Paths.Auth.LOGIN());
+            return;
+        }
 
         CreateTodoRequest createReq = RequestFactory.createTodo(req);
 
-        todoService.createTodo(createReq, userId);
-        resp.sendRedirect(req.getContextPath() + "/todos");
+        // Diagnostic logging
+        System.out.println("TodoServlet.createTodo: userId=" + userId + ", createReq=" + createReq);
+
+        // Category is optional now; createReq.getCategoryId() may be null
+        try {
+            Todo created = todoService.createTodo(createReq, userId);
+            System.out.println("TodoServlet.createTodo: created todo id=" + (created != null ? created.getId() : "null"));
+        } catch (Exception e) {
+            System.out.println("TodoServlet.createTodo: exception during create: " + e);
+            e.printStackTrace();
+            throw e; // rethrow to be handled by outer catch
+        }
+        resp.sendRedirect(req.getContextPath() + Paths.Todos.LIST());
     }
 
     private void updateTodo(HttpServletRequest req, HttpServletResponse resp,
@@ -199,9 +249,9 @@ public class TodoServlet extends HttpServlet {
             throws IOException {
 
         String idStr = match.getParams().get(PathParams.Todos.ID);
-        Integer id = Integer.valueOf(idStr);
+        int id = Integer.parseInt(idStr);
 
-        Integer userId = (Integer) req.getSession().getAttribute("userId");
+        int userId = SessionUtils.getLoggedUserId(req);
 
         UpdateTodoRequest request = RequestFactory.updateTodo(req, id);
 
@@ -214,9 +264,9 @@ public class TodoServlet extends HttpServlet {
             throws IOException {
 
         String idStr = match.getParams().get(PathParams.Todos.ID);
-        Integer id = Integer.valueOf(idStr);
+        int id = Integer.parseInt(idStr);
 
-        Integer userId = (Integer) req.getSession().getAttribute("userId");
+        int userId = SessionUtils.getLoggedUserId(req);
 
         todoService.deleteTodo(RequestFactory.deleteTodo(id), userId);
         resp.sendRedirect(req.getContextPath() + Paths.Todos.LIST());

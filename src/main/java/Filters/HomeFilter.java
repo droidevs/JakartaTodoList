@@ -32,8 +32,9 @@ public class HomeFilter implements Filter {
         if (path.equals("/") || path.isEmpty()) {
             // The request is for the root of your web app
             if (isLoggedIn) {
+                System.out.println("HomeFilter: User is signed in, redirecting to todos");
                 // User is signed in redirect to todos
-                resp.sendRedirect(req.getContextPath() + "/todos"); // Updated to use the correct path
+                resp.sendRedirect(req.getContextPath() + Api.TODOS_LIST.getPath());
                 return;
             }
         }

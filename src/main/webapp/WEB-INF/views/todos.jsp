@@ -1,21 +1,16 @@
-
 <%@page import="View.CssResolver"%>
 <%@page import="View.ComponentResolver"%>
-<%-- 
+<%@ page import="Paths.Paths" %>
+<%@ page import="Data.Todo" %>
+<%@ page import="java.util.List" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%--
     Document   : todos
     Created on : Dec 29, 2025, 11:55:49 AM
     Author     : admin
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-
-<%@ page contentType="text/html;charset=UTF-8" %>
-
-<%@page import="View.ViewResolver"%>
-<%@page import="Data.Todo"%>
-<%@ page import="java.util.*" %>
-
-<jsp:include page="<%= ComponentResolver.HEADER %>">
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.HEADER) %>">
     <jsp:param name="title" value="Todos List"/>
     <jsp:param name="css" value="<%= CssResolver.TODOS %>"/>
 </jsp:include>
@@ -26,7 +21,7 @@
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">? Todos</h2>
-        <a href="todo/create" class="btn btn-primary btn-lg">
+        <a href="<%= request.getContextPath() + Paths.Todos.CREATE_FORM() %>" class="btn btn-primary btn-lg">
             ? New Todo
         </a>
     </div>
@@ -47,7 +42,7 @@
         <%
             request.setAttribute("todo", todo);
         %>
-        <jsp:include page="<%= ComponentResolver.TODO_ITEM %>" />
+        <jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.TODO_ITEM) %>" />
         <% } %>
     </div>
 
@@ -55,5 +50,4 @@
 
 </div>
 
-<%@ include file="<%= ComponentResolver.FOOTER %>" %>
-
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.FOOTER) %>" />

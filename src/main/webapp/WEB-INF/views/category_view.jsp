@@ -6,9 +6,8 @@
 
 <%@page import="View.CssResolver"%>
 <%@page import="View.ComponentResolver"%>
-<%@page import="java.awt.Component"%>
 <%@page import="Paths.Api"%>
-<%@page import="View.ViewResolver"%>
+<%@ page import="Paths.Paths" %>
 <%@ page import="java.util.List" %>
 <%@ page import="Data.Category" %>
 <%@ page import="Data.Todo" %>
@@ -18,7 +17,7 @@
     List<Todo> todos = (List<Todo>) request.getAttribute("todos");
 %>
 
-<jsp:include page="<%= ComponentResolver.HEADER %>">
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.HEADER) %>">
     <jsp:param name="title" value="View Category"/>
     <jsp:param name="css" value="<%= CssResolver.CATEGORY_VIEW %>"/>
 </jsp:include>
@@ -72,7 +71,7 @@
     <h4>No todos in this category</h4>
     <p>Add a new todo to get started</p>
 
-    <a href="<%= request.getContextPath()%>/todo/create?categoryId=<%= category.getId()%>"
+    <a href="<%= request.getContextPath() + Paths.Todos.CREATE() %>?categoryId=<%= category.getId()%>"
        class="btn btn-primary mt-2">
         + Create Todo
     </a>
@@ -86,7 +85,7 @@
         <%
             request.setAttribute("todo", todo);
         %>
-        <jsp:include page="<%= ComponentResolver.TODO_ITEM %>"/>
+        <jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.TODO_ITEM) %>"/>
     </div>
     <% } %>
 </div>
@@ -94,9 +93,4 @@
     }
 %>
 
-<%@ include file="<%= ComponentResolver.FOOTER %>"%>
-
-
-
-
-
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.FOOTER) %>" />

@@ -16,9 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import Paths.Paths;
 
 
-@WebServlet("/todos")
+//@WebServlet("/todos")
 public class TodosServlet extends HttpServlet {
 
     //private final TodoServiceImpl todoService;
@@ -47,7 +48,7 @@ public class TodosServlet extends HttpServlet {
     
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.sendRedirect(req.getContextPath() + "/todos");
+        resp.sendRedirect(req.getContextPath() + Paths.Todos.LIST()); // Ensure proper redirection
     }
  
 }

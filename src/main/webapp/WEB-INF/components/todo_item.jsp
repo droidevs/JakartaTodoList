@@ -7,13 +7,16 @@
 <%@page import="Constants.TodoStatus"%>
 <%@page import="Data.Todo"%>
 <%@page import="Data.Category"%>
+<%@page import="Constants.Defaults"%>
+<%@page import="Paths.Api"%>
 
 <%
     Todo todo = (Todo) request.getAttribute("todo");
     Category category = todo.getCategory();
 
     String categoryName  = category != null ? category.getName() : "Uncategorized";
-    String categoryColor = category != null ? category.getColor() : "#6c757d"; // bootstrap secondary
+    // Use a central default color when todo has no category
+    String categoryColor = category != null ? category.getColor() : Defaults.NO_CATEGORY_COLOR;
 %>
 
 <div class="todo-card shadow-sm"
@@ -53,17 +56,17 @@
     <!-- ACTIONS -->
     <div class="todo-actions">
 
-        <form action="todo/view" method="get">
+        <form action="<%= request.getContextPath() + Api.TODOS_GET_ONE(todo.getId()).getPath() %>" method="get">
             <input type="hidden" name="id" value="<%= todo.getId() %>">
             <button class="btn btn-outline-info btn-sm w-100">View</button>
         </form>
 
-        <form action="todo/create" method="get">
+        <form action="<%= request.getContextPath() + Api.TODOS_UPDATE_FORM(todo.getId()).getPath() %>" method="get">
             <input type="hidden" name="id" value="<%= todo.getId() %>">
             <button class="btn btn-outline-secondary btn-sm w-100">Edit</button>
         </form>
 
-        <form action="todo/delete" method="get"
+        <form action="<%= request.getContextPath() + Api.TODOS_DELETE(todo.getId()).getPath() %>" method="post"
               onsubmit="return confirm('Delete this todo?');">
             <input type="hidden" name="id" value="<%= todo.getId() %>">
             <button class="btn btn-outline-danger btn-sm w-100">Delete</button>

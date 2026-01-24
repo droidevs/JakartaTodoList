@@ -27,10 +27,10 @@ public class HiberneteUtil {
             String dbUser = getEnvOrDefault("DB_USER", "todouser");
             String dbPassword = getEnvOrDefault("DB_PASSWORD", "todopassword");
 
+            String jdbcUrl;
             if ("sqlserver".equalsIgnoreCase(dbType)) {
                 // Azure SQL Server configuration (production)
-                // Include user and password in URL for Azure SQL compatibility
-                String jdbcUrl = "jdbc:sqlserver://" + dbHost + ":" + dbPort
+                jdbcUrl = "jdbc:sqlserver://" + dbHost + ":" + dbPort
                         + ";database=" + dbName
                         + ";user=" + dbUser
                         + ";password=" + dbPassword
@@ -44,10 +44,12 @@ public class HiberneteUtil {
                 System.out.println("Hibernate connecting to Azure SQL: " + dbHost + "/" + dbName + " as " + dbUser);
             } else {
                 // PostgreSQL configuration (local development)
-                String jdbcUrl = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
+                jdbcUrl = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
                 configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
                 configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
                 configuration.setProperty("hibernate.connection.url", jdbcUrl);
+
+                System.out.println("Hibernate connecting to Postgres: " + jdbcUrl + " as " + dbUser);
             }
 
             configuration.setProperty("hibernate.connection.username", dbUser);

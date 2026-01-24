@@ -26,6 +26,11 @@ public final class Api {
         return method;
     }
 
+    @Override
+    public String toString() {
+        return this.path;
+    }
+
     // --- AUTH ---
     public static final Api AUTH_LOGIN = new Api(Paths.Auth.LOGIN(), Route.AUTH_LOGIN.getMethod());
     public static final Api AUTH_REGISTER = new Api(Paths.Auth.REGISTER(), Route.AUTH_REGISTER.getMethod());

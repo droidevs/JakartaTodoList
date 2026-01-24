@@ -18,7 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author Mouad OUMOUS
  */
-@WebServlet("/todo/view")
+@Deprecated
+//@WebServlet("/todo/view")
 public class ViewTodoServlet extends HttpServlet {
 
     private final TodoService todoService;
@@ -47,13 +48,13 @@ public class ViewTodoServlet extends HttpServlet {
         try {
             id = Integer.valueOf(request.getParameter("id"));
             var sessionUser = (Integer) request.getSession().getAttribute("userId");
-            
-            var todo = todoService.getTodo(new GetTodoRequest(id), 
+
+            var todo = todoService.getTodo(new GetTodoRequest(id),
                     sessionUser
             );
             request.setAttribute("todo", todo);
             request.getRequestDispatcher("/ViewTodo.jsp").forward(request, response);
-            
+
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath()+ "/todos");
         } catch(Exception e) {

@@ -58,12 +58,16 @@ public class AuthServiceImpl implements AuthService {
         String fullName = request.getFullName();
         String password = request.getPassword();
         String confirmPassowrd = request.getConfirmPassword();
-        
+
+        System.out.println("AuthServiceImpl.register: attempting to register username='" + username + "', fullName='" + fullName + "'");
+
         if(userRepository.findByUsername(username) != null) {
+            System.out.println("AuthServiceImpl.register: user already exists: " + username);
             throw new UserAlreadyExistsException();
         }
         
         if (password == null ? confirmPassowrd != null : !password.equals(confirmPassowrd)) {
+            System.out.println("AuthServiceImpl.register: password confirmation mismatch for user: " + username);
             throw new PasswordNotConfirmedException();
         }
         
@@ -74,7 +78,10 @@ public class AuthServiceImpl implements AuthService {
         user.setFullName(fullName);
         user.setPasswordHash(hashedPassword);
 
+        // Save and log
+        System.out.println("AuthServiceImpl.register: saving user to repository: " + username);
         userRepository.save(user);
+        System.out.println("AuthServiceImpl.register: user saved with id=" + user.getId());
         return user;
     }
     

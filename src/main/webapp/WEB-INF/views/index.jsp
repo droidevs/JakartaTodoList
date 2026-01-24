@@ -6,12 +6,14 @@
 
 
 
-<%@page import="View.ViewResolver"%>
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.HEADER) %>"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="View.ComponentResolver" %>
 
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.HEADER) %>" />
 
-<h1 class="mb-4">Welcome to Todo App</h1>
-<p class="lead mb-4">Organize your tasks efficiently and never miss a deadline!</p>
+<div class="container mt-4">
+    <h1>Welcome to Todo App</h1>
+</div>
 
 <hr>
 
@@ -30,5 +32,4 @@
     </ul>
 </div>
 
-<%@ include file="<%= ViewResolver.resolve(ViewResolver.FOOTER) %>"%>
-
+<jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.FOOTER) %>" />

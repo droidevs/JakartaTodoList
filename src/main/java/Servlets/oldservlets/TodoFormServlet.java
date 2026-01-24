@@ -26,7 +26,8 @@ import java.time.LocalDate;
  *
  * @author Mouad OUMOUS
  */
-@WebServlet("/todo/create")
+@Deprecated
+//@WebServlet("/todo/create")
 public class TodoFormServlet extends HttpServlet {
 
     private final TodoService todoService;
@@ -54,7 +55,7 @@ public class TodoFormServlet extends HttpServlet {
 
         try {
             id = Integer.valueOf(request.getParameter("id"));
-            // if the id is there then we are in the edit mode 
+            // if the id is there then we are in the edit mode
             // we check if the edited resource is for the logged in user
             var sessionUser = (Integer) request.getSession().getAttribute("userId");
             var todo = todoService.getTodo(new GetTodoRequest(id), sessionUser);

@@ -26,7 +26,8 @@ import java.util.Objects;
  *
  * @author Mouad OUMOUS
  */
-@WebServlet("/todo/delete")
+@Deprecated
+//@WebServlet("/todo/delete")
 public class DeleteTodoServlet extends HttpServlet {
 
 
@@ -61,7 +62,7 @@ public class DeleteTodoServlet extends HttpServlet {
             ExceptionHandlerUtil.handle(request, response, e, null);
             return;
         }
-        
+
         response.sendRedirect(request.getContextPath()+"/todos");
     }
    

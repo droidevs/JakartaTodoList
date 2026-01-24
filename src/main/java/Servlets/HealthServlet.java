@@ -20,6 +20,7 @@ public class HealthServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("HealthServlet: GET " + req.getRequestURI());
         resp.setContentType("application/json;charset=UTF-8");
         final boolean[] dbOk = {false};
         String message = "OK";

@@ -18,21 +18,21 @@ public final class ViewResolver {
 
     // Centralized base path and extension
     private static final String BASE_PATH = "/WEB-INF/views/";
-    private static final String COMPONENTS_BASE_PATH = "/WEB-INF/components/";
     private static final String EXT = ".jsp";
 
-    // Static references for views (base path and extension are centralized)
-    public static final String INDEX = BASE_PATH + "index" + EXT;
-    public static final String LOGIN = BASE_PATH + "login" + EXT;
-    public static final String SIGNUP = BASE_PATH + "signup" + EXT;
-    public static final String LOGOUT = BASE_PATH + "logout" + EXT;
-    public static final String TODOS = BASE_PATH + "todos" + EXT;
-    public static final String TODO_FORM = BASE_PATH + "todo_form" + EXT;
-    public static final String TODO_VIEW = BASE_PATH + "todo_view" + EXT;
-    public static final String ERROR = BASE_PATH + "error" + EXT;
-    public static final String CATEGORIES = BASE_PATH + "categories" + EXT;
-    public static final String CATEGORY_FORM = BASE_PATH + "category_form" + EXT;
-    public static final String CATEGORY_VIEW = BASE_PATH + "category_view" + EXT;
+    // Static logical names for views (no base path / extension)
+    public static final String INDEX = "index";
+    public static final String LOGIN = "login";
+    public static final String SIGNUP = "signup";
+    public static final String LOGOUT = "logout";
+    public static final String TODOS = "todos";
+    public static final String TODO_FORM = "todo_form";
+    public static final String TODO_VIEW = "todo_view";
+    public static final String ERROR = "error";
+    public static final String CATEGORIES = "categories";
+    public static final String CATEGORY_FORM = "category_form";
+    public static final String CATEGORY_VIEW = "category_view";
+
     /**
      * Resolves a logical view name dynamically, e.g., "todos" -> "/WEB-INF/views/todos.jsp"
      */
@@ -45,4 +45,3 @@ public final class ViewResolver {
 
     private ViewResolver() {} // Prevent instantiation
 }
-

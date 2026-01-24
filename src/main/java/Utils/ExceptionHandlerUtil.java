@@ -13,10 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 
-/**
- *
- * @author admin
- */
+
 public class ExceptionHandlerUtil {
 
     /**

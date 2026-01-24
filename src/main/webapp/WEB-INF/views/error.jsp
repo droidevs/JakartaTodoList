@@ -124,7 +124,7 @@
                     <h1>404</h1>
                     <h3>Oops! Page not found</h3>
                     <p>The page you are looking for might have been removed or never existed.</p>
-                    <a href="/" class="btn btn-primary btn-lg btn-home">Go Back Home</a>
+                    <a href="<%= request.getContextPath() %>/" class="btn btn-primary btn-lg btn-home">Go Back Home</a>
                 </div>
             </c:when>
 
