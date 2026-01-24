@@ -84,6 +84,8 @@
     <div class="todo-wrapper">
         <%
             request.setAttribute("todo", todo);
+            // suppress category label inside a category page
+            request.setAttribute("suppressCategory", true);
         %>
         <jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.TODO_ITEM) %>"/>
     </div>

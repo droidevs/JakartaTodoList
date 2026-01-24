@@ -37,12 +37,15 @@
     <% } else { %>
 
     <!-- GRID -->
-    <div class="todo-grid">
+    <div class="todo-grid row g-3">
         <% for (Todo todo : todos) { %>
-        <%
-            request.setAttribute("todo", todo);
-        %>
-        <jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.TODO_ITEM) %>" />
+        <div class="col-lg-6">
+            <%
+                request.setAttribute("todo", todo);
+                request.setAttribute("suppressCategory", false);
+            %>
+            <jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.TODO_ITEM) %>" />
+        </div>
         <% } %>
     </div>
 
