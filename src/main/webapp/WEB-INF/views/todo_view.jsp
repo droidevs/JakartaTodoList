@@ -21,7 +21,7 @@
         <h5 class="card-title"><%= todo.getTitle() %></h5>
         <p class="card-text"><%= todo.getDescription() %></p>
 
-        <a href="${request.getContextPath()+"/todos"}" class="btn btn-secondary">Back</a>
+        <a href="<%= request.getContextPath() + "/todos" %>" class="btn btn-secondary">Back</a>
     </div>
 </div>
 <jsp:include page="<%= ComponentResolver.resolve(ComponentResolver.FOOTER) %>" />

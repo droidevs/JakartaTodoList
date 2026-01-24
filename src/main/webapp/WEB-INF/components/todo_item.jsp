@@ -23,7 +23,7 @@
     }
 
     Category category = todo.getCategory();
-    String categoryName  = category != null ? category.getName() : "Uncategorized";
+    String categoryName  = category != null ? category.getName() : "No Category";
     String categoryColor = category != null ? category.getColor() : Defaults.NO_CATEGORY_COLOR;
 
     // suppressCategory: accept as attribute or param (attribute wins)
@@ -33,7 +33,7 @@
 %>
 
 <div class="todo-card shadow-sm mb-3"
-     style="border-left: 6px solid <%= categoryColor %>; border-radius:12px; overflow:hidden">
+     style="border-left: 6px solid <%= categoryColor %>; border-radius:12px; overflow:hidden; position:relative">
     <!-- CATEGORY TAG (EDGE) -->
     <% if (!suppressCategory) { %>
     <div class="todo-category text-white px-2 py-1"
@@ -44,9 +44,6 @@
     <!-- HEADER -->
     <div class="todo-header">
         <h5 class="todo-title"><%= todo.getTitle() %></h5>
-        <% if (!suppressCategory) { %>
-        <div class="small text-muted">Category: <%= categoryName %></div>
-        <% } %>
         <span class="badge
             <%= todo.getStatus() == TodoStatus.NEW ? "bg-primary" :
                 todo.getStatus() == TodoStatus.IN_PROGRESS ? "bg-warning" :
